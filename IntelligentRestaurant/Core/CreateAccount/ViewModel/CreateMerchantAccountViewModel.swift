@@ -64,8 +64,10 @@ class CreateMerchantAccountViewModel: ObservableObject {
             return false
         }
         
-        let merchantAccount = MerchantAccountModel(name: name, phoneNumber: "未知", email: email, photoLink: "", password: password, location: location, intro: "")
-        
+        var merchantAccount = MerchantAccountModel(name: name, phoneNumber: "未知", email: email, photo: Data(), password: password, location: location, intro: "")
+        if selectedPhotoData != nil {
+            merchantAccount.photo = selectedPhotoData!
+        }
         let registerResult = await DatabaseManager.shared.uploadData(to: registerUrl, data: merchantAccount)
         switch registerResult {
         case .success(let returnedInfo):
@@ -83,27 +85,6 @@ class CreateMerchantAccountViewModel: ObservableObject {
         case .failure(let errorStatus):
             await createMerchantAccountErrorHandler(errorStatus: .somethingError, customErrorMessage: errorStatus.rawValue)
             return false
-        }
-        
-        if selectedPhotoData != nil {
-            guard let url = URL(string: "http://120.126.151.186/API/eating/user/photo") else {
-                await createMerchantAccountErrorHandler(errorStatus: .uploadImageUrlError)
-                return false
-            }
-            var request = URLRequest(url: url)
-            request.httpMethod = "PUT"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            var userPhotoUpload = UserPhotoUpload(email: email, password: password, image: selectedPhotoData!)
-            guard let data = try? JSONEncoder().encode(userPhotoUpload) else { return false }
-            request.httpBody = data
-            guard let (data, response) = try? await URLSession.shared.data(for: request) else {
-                print("❌ Fail upload image")
-                return false
-            }
-            guard let response = response as? HTTPURLResponse else {
-                return false
-            }
-            print(response.statusCode)
         }
     
         await MainActor.run {
@@ -152,11 +133,4 @@ extension CreateMerchantAccountViewModel {
         case statusCodeUndefined = "未定義狀態碼"
         case uploadImageUrlError = "圖片上傳網址錯誤"
     }
-}
-
-struct UserPhotoUpload: Encodable {
-    var email: String
-    var password: String
-    var image: Data
-    var role: String = "Merchant"
 }

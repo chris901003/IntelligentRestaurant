@@ -45,10 +45,12 @@ class MerchantAccountViewModel: ObservableObject {
         location = merchantAccountInfo.location
         intro = merchantAccountInfo.intro
         accountUid = merchantAccountInfo.uid
+        if let image = UIImage(data: MerchantShareInfoManager.instance.merchantAccount.photo) {
+            photo = image
+        }
         if intro.count == 0 {
             intro = "(增加更多資訊...)"
         }
-        Task { await loadMerchantPhoto(imageUrl: merchantAccountInfo.photoLink) }
     }
     
     // Public Function
@@ -103,15 +105,16 @@ class MerchantAccountViewModel: ObservableObject {
             return
         }
         
-        let newMerchantAccountInfo = MerchantAccountModel(uid: accountUid, name: name, phoneNumber: phoneNumber, email: emailAddress, photoLink: "", password: password, location: location, intro: intro)
+        var newMerchantAccountInfo = MerchantAccountModel(uid: accountUid, name: name, phoneNumber: phoneNumber, email: emailAddress, photo: Data(), password: password, location: location, intro: intro)
+        if selectedImageData != nil {
+            newMerchantAccountInfo.photo = selectedImageData!
+        }
         let updateResult = await DatabaseManager.shared.uploadData(to: updateLink, data: newMerchantAccountInfo, httpMethod: "Put")
         switch updateResult {
         case .success(let updateInfo):
             switch updateInfo.1 {
             case 200:
-                await MainActor.run {
-                    MerchantShareInfoManager.instance.merchantAccount = newMerchantAccountInfo
-                }
+                MerchantShareInfoManager.instance.merchantAccount = newMerchantAccountInfo
             default:
                 await updateMerchantAccountErrorHandler(errorStatus: .stateCodeUndefined)
                 return
@@ -157,17 +160,6 @@ class MerchantAccountViewModel: ObservableObject {
     }
     
     // Private Function
-    /// 透過指定的路徑獲取圖像資料
-    private func loadMerchantPhoto(imageUrl: String) async {
-        await MainActor.run {
-            isProgressing.toggle()
-        }
-        
-        await MainActor.run {
-            isProgressing.toggle()
-        }
-    }
-    
     /// 處理在保存帳號時的意外
     private func updateMerchantAccountErrorHandler(errorStatus: SavingAccountError, customErrorMessage: String = "") async {
         await MainActor.run {

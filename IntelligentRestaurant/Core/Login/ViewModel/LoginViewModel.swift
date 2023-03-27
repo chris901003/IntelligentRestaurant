@@ -83,7 +83,7 @@ class LoginViewModel: ObservableObject {
         }
         
         // 處理登錄相關資料
-        let merchantAccount = MerchantAccountModel(name: "", phoneNumber: "", email: account, photoLink: "", password: password, location: CLLocationCoordinate2D(), intro: "")
+        let merchantAccount = MerchantAccountModel(name: "", phoneNumber: "", email: account, photo: Data(), password: password, location: CLLocationCoordinate2D(), intro: "")
         
         let loginResult = await DatabaseManager.shared.uploadData(to: loginUrl, data: merchantAccount)
         switch loginResult {
@@ -96,6 +96,7 @@ class LoginViewModel: ObservableObject {
                 }
                 await MainActor.run {
                     MerchantShareInfoManager.instance.merchantAccount = returnedAccountInfo
+                    MerchantShareInfoManager.instance.merchantAccount.password = password
                 }
             case 400:
                 await loginAccountErrorHandler(errorStatus: .statusCode400)

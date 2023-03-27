@@ -14,7 +14,7 @@ struct MerchantAccountModel: Identifiable, Codable {
     var name: String = ""
     var phoneNumber: String = ""
     var email: String = ""
-    var photoLink: String = ""
+    var photo: Data = Data()
     var password: String = ""
     var location: CLLocationCoordinate2D = CLLocationCoordinate2D()
     var intro: String = ""
@@ -33,12 +33,12 @@ struct MerchantAccountModel: Identifiable, Codable {
     
     init() { }
     
-    init(uid: String = "", name: String, phoneNumber: String, email: String, photoLink: String, password: String, location: CLLocationCoordinate2D, intro: String) {
+    init(uid: String = "", name: String, phoneNumber: String, email: String, photo: Data, password: String, location: CLLocationCoordinate2D, intro: String) {
         self.uid = uid
         self.name = name
         self.phoneNumber = phoneNumber
         self.email = email
-        self.photoLink = photoLink
+        self.photo = Data()
         self.password = password
         self.location = location
         self.tableInfoUid = []
@@ -55,10 +55,10 @@ struct MerchantAccountModel: Identifiable, Codable {
             self.phoneNumber = ""
         }
         self.email = try container.decode(String.self, forKey: .email)
-        if let photoLink = try? container.decode(String.self, forKey: .photoLink) {
-            self.photoLink = photoLink
-        } else {
-            self.photoLink = ""
+        if let photo = try? container.decode(String.self, forKey: .photo) {
+            self.photo = Data(base64Encoded: photo)!
+        } else{
+            self.photo = Data()
         }
         self.password = try container.decode(String.self, forKey: .password)
         let locationInfo = try container.decode([String].self, forKey: .location)
