@@ -117,7 +117,7 @@ struct MerchantRoomSpaceView: View {
                 Text("門")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .door, name: "", capacity: 0, offset: .zero))
+                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .door, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
             }
             Spacer()
             VStack {
@@ -125,7 +125,7 @@ struct MerchantRoomSpaceView: View {
                 Text("桌")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .table, name: "", capacity: 0, offset: .zero))
+                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .table, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
             }
             Spacer()
             VStack {
@@ -135,7 +135,7 @@ struct MerchantRoomSpaceView: View {
                 Text("水平牆面")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .horizontalWall, name: "", capacity: 0, offset: .zero))
+                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .horizontalWall, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
             }
             Spacer()
             VStack {
@@ -145,7 +145,7 @@ struct MerchantRoomSpaceView: View {
                 Text("垂直牆面")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .verticalWall, name: "", capacity: 0, offset: .zero))
+                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .verticalWall, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
             }
         }
         .font(.title3)

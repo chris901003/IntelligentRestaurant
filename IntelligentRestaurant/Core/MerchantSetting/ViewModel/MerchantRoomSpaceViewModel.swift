@@ -14,7 +14,7 @@ class MerchantRoomSpaceViewModel: ObservableObject {
     @Published var oldRoomItemsInfo: [MerchantRoomSpaceItemModel] = []
     @Published var newRoomItemsInfo: [MerchantRoomSpaceItemModel] = []
     @Published var selectedItemFrom: ItemFrom = .newAppend
-    @Published var selectedRoomItem: MerchantRoomSpaceItemModel = .init(uid: "", item: .door, name: "", capacity: 1, offset: .zero)
+    @Published var selectedRoomItem: MerchantRoomSpaceItemModel = .init(uid: "", item: .door, name: "", capacity: 1, offset: .zero, merchantUid: "")
     
     @Published var isProcessing: Bool = false
     @Published var isProcessError: Bool = false
@@ -22,8 +22,12 @@ class MerchantRoomSpaceViewModel: ObservableObject {
     @Published var updateTableErrorMessage: String = ""
     @Published var isShowSuccessSaveSpaceItem: Bool = false
     
+    // Public Variable
+    let merchantUid: String = MerchantShareInfoManager.instance.merchantAccount.uid
+    
     // Private Variable
     private var originalItemsInfo: [MerchantRoomSpaceItemModel] = []
+    private let tableItemDatabaseUrl: String = "http://120.126.151.186/API/eating/table"
     
     // Init Function
     init() {
@@ -123,9 +127,16 @@ class MerchantRoomSpaceViewModel: ObservableObject {
         
         // 將舊物件以及新物件回傳到後端資料庫中
         
-        // 將新物件放到舊物件當中，不需重新從後端提取資料
-        oldRoomItemsInfo.append(contentsOf: newRoomItemsInfo)
-        newRoomItemsInfo = []
+        // 將新桌子傳到後端
+        let addTableResult = await addNewTable()
+        
+        // 目前只有新增桌子以及刪除的後端，連查詢都沒有
+        
+        await MainActor.run {
+            // 將新物件放到舊物件當中，不需重新從後端提取資料
+            oldRoomItemsInfo.append(contentsOf: newRoomItemsInfo)
+            newRoomItemsInfo = []
+        }
         
         await MainActor.run {
             isProcessing.toggle()
@@ -153,6 +164,22 @@ class MerchantRoomSpaceViewModel: ObservableObject {
         }
     }
     
+    /// 新桌子資料回傳到後端
+    private func addNewTable() async -> Bool {
+        for newItem in newRoomItemsInfo {
+            guard newItem.item == .table else { continue }
+            let uploadResult = await DatabaseManager.shared.uploadData(to: tableItemDatabaseUrl, data: newItem)
+            switch uploadResult {
+            case .success(_):
+                continue
+            case .failure(_):
+                await progressErrorHandler(errorStatus: ProgressErrorType.tableUpdateError)
+                return false
+            }
+        }
+        return true
+    }
+    
     /// 在與資料處理時發生錯誤，到這裡進行顯示控制
     private func progressErrorHandler(errorStatus: ProgressErrorType) async {
         await MainActor.run {
@@ -178,5 +205,6 @@ extension MerchantRoomSpaceViewModel {
     enum ProgressErrorType: String {
         case tableNoName = "每張桌子需要有個別名稱"
         case tableCapacity = "桌子人數不可少於一人"
+        case tableUpdateError = "桌子資料更新失敗，請確認網路狀態"
     }
 }

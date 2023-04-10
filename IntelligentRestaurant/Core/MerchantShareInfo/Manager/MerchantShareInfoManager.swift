@@ -14,9 +14,9 @@ class MerchantShareInfoManager: ObservableObject {
     static var instance: MerchantShareInfoManager = MerchantShareInfoManager()
     
     // Published Variable
-    @Published var isLogin: Bool = true
+    @Published var isLogin: Bool = false
     @Published var userMode: UserMode = .merchant
-    @Published var tabViewSelect = 3
+    @Published var tabViewSelect = 2
     @Published var settingModeSelect: [Int] = []
     
     @Published var merchantAccount: MerchantAccountModel = MerchantAccountModel()

@@ -107,7 +107,7 @@ class MerchantAccountViewModel: ObservableObject {
         
         var newMerchantAccountInfo = MerchantAccountModel(uid: accountUid, name: name, phoneNumber: phoneNumber, email: emailAddress, photo: Data(), password: password, location: location, intro: intro)
         if selectedImageData != nil {
-            newMerchantAccountInfo.photo = selectedImageData!
+            newMerchantAccountInfo.photo = (UIImage(data: selectedImageData!)?.jpegData(compressionQuality: 0)!)!
         }
         let updateResult = await DatabaseManager.shared.uploadData(to: updateLink, data: newMerchantAccountInfo, httpMethod: "Put")
         switch updateResult {
