@@ -21,11 +21,11 @@ struct MerchantRoomSpaceItemModel: Identifiable, Codable, Equatable {
 
 extension MerchantRoomSpaceItemModel {
     
-    enum Item: Codable {
-        case door
-        case table
-        case verticalWall
-        case horizontalWall
+    enum Item: String, Codable {
+        case door = "door"
+        case table = "table"
+        case verticalWall = "verticalWall"
+        case horizontalWall = "horizontalWall"
     }
 }
 
@@ -49,9 +49,12 @@ extension MerchantRoomSpaceItemModel {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         uid = try container.decode(String.self, forKey: .uid)
         name = try container.decode(String.self, forKey: .name)
-        capacity = try container.decode(Int.self, forKey: .capacity)
-        let tmpOffset = try container.decode([Double].self, forKey: .offset)
-        offset = .init(width: tmpOffset[0], height: tmpOffset[1])
+        let capacityStr = try container.decode(String.self, forKey: .capacity)
+        self.capacity = Int(capacityStr)!
+        let tmpOffset = try container.decode([String].self, forKey: .offset)
+        let offsetWidth = Double(tmpOffset[0]) ?? 0
+        let offsetHeight = Double(tmpOffset[1]) ?? 0
+        self.offset = .init(width: offsetWidth, height: offsetHeight)
         merchantUid = try container.decode(String.self, forKey: .merchantUid)
         item = try container.decode(Item.self, forKey: .item)
     }

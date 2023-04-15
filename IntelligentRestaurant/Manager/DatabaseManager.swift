@@ -27,7 +27,11 @@ class DatabaseManager {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let data = try? jsonEncoder.encode(data) else { return .failure(.encodeError) }
         request.httpBody = data
-        guard let (data, response) = try? await URLSession.shared.data(for: request) else { return .failure(.httpConnectError) }
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForResource = 5
+        configuration.timeoutIntervalForRequest = 5
+        let session = URLSession(configuration: configuration)
+        guard let (data, response) = try? await session.data(for: request) else { return .failure(.httpConnectError) }
         guard let response = response as? HTTPURLResponse else { return .failure(.responseCodeError) }
         let statusCode = response.statusCode
         return .success((data, statusCode))

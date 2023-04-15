@@ -72,23 +72,33 @@ struct MerchantRoomSpaceView: View {
                     MerchantShareInfoManager.instance.settingModeSelect = []
                 }
             Spacer()
-            Text("還原")
-                .foregroundColor(Color.red.opacity(0.8))
-                .padding(8)
-                .padding(.horizontal, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.red.opacity(0.8), lineWidth: 3)
-                )
-                .onTapGesture { vm.resetRoomSpaceItem() }
-            Text("保存")
-                .padding(8)
-                .padding(.horizontal, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(lineWidth: 3)
-                )
-                .onTapGesture { isShowSaveAlert.toggle() }
+            Button {
+                vm.resetRoomSpaceItem()
+            } label: {
+                Text("還原")
+                    .foregroundColor(Color.red.opacity(0.8))
+                    .opacity(vm.isChange ? 1 : 0.5)
+                    .padding(8)
+                    .padding(.horizontal, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.red.opacity(0.8), lineWidth: 3)
+                    )
+            }
+            .disabled(!vm.isChange)
+            Button {
+                isShowSaveAlert.toggle()
+            } label: {
+                Text("保存")
+                    .padding(8)
+                    .opacity(vm.isChange ? 1 : 0.5)
+                    .padding(.horizontal, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(lineWidth: 3)
+                    )
+            }
+            .disabled(!vm.isChange)
         }
         .foregroundColor(Color(hex: "#9B7E6E"))
         .font(.headline)
@@ -117,7 +127,7 @@ struct MerchantRoomSpaceView: View {
                 Text("門")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .door, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
+                vm.newRoomItemsInfo.append(.init(info: .init(uid: UUID().uuidString, item: .door, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid)))
             }
             Spacer()
             VStack {
@@ -125,7 +135,7 @@ struct MerchantRoomSpaceView: View {
                 Text("桌")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .table, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
+                vm.newRoomItemsInfo.append(.init( info: .init(uid: UUID().uuidString, item: .table, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid)))
             }
             Spacer()
             VStack {
@@ -135,7 +145,7 @@ struct MerchantRoomSpaceView: View {
                 Text("水平牆面")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .horizontalWall, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
+                vm.newRoomItemsInfo.append(.init(info: .init(uid: UUID().uuidString, item: .horizontalWall, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid)))
             }
             Spacer()
             VStack {
@@ -145,7 +155,7 @@ struct MerchantRoomSpaceView: View {
                 Text("垂直牆面")
             }
             .onTapGesture {
-                vm.newRoomItemsInfo.append(.init(uid: UUID().uuidString, item: .verticalWall, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid))
+                vm.newRoomItemsInfo.append(.init(info: .init(uid: UUID().uuidString, item: .verticalWall, name: "", capacity: 0, offset: .zero, merchantUid: vm.merchantUid)))
             }
         }
         .font(.title3)
@@ -156,52 +166,68 @@ struct MerchantRoomSpaceView: View {
         ZStack {
             Color.white.opacity(0.01)
                 .onTapGesture { isShowTableInfo.toggle() }
-            VStack {
-                Text("桌子資訊")
-                    .underline()
-                HStack {
-                    Text("桌名:")
-                    TextField("桌名", text: $vm.selectedRoomItem.name)
-                        .padding(8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 5)
-                                .foregroundColor(Color(hex: "#F3EEEE"))
-                        )
-                }
-                HStack {
-                    Stepper(value: $vm.selectedRoomItem.capacity) {
-                        Text("人數: \(vm.selectedRoomItem.capacity)")
+            ZStack {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "trash.circle")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .onTapGesture {
+                                vm.deleteTable()
+                                isShowTableInfo.toggle()
+                            }
                     }
+                    Spacer()
                 }
-                .padding(.bottom, 8)
-                HStack(spacing: 32) {
-                    Text("取消")
-                        .font(.subheadline)
-                        .foregroundColor(Color(hex: "#715428"))
-                        .padding(8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color(hex: "#715428"), lineWidth: 2)
-                        )
-                        .onTapGesture { isShowTableInfo.toggle() }
-                    Text("確定")
-                        .font(.subheadline)
-                        .foregroundColor(Color(hex: "#715428"))
-                        .padding(8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color(hex: "#715428"), lineWidth: 2)
-                        )
-                        .onTapGesture {
-                            let res = vm.updateTableInfo()
-                            if res { isShowTableInfo.toggle() }
-                        }
-                }
-                .bold()
                 
-                Text(vm.updateTableErrorMessage)
-                    .foregroundColor(Color.red)
-                    .font(.headline)
+                VStack {
+                    Text("桌子資訊")
+                        .underline()
+                    HStack {
+                        Text("桌名:")
+                        TextField("桌名", text: $vm.selectedRoomItem.info.name)
+                            .padding(8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .foregroundColor(Color(hex: "#F3EEEE"))
+                            )
+                    }
+                    HStack {
+                        Stepper(value: $vm.selectedRoomItem.info.capacity) {
+                            Text("人數: \(vm.selectedRoomItem.info.capacity)")
+                        }
+                    }
+                    .padding(.bottom, 8)
+                    HStack(spacing: 32) {
+                        Text("取消")
+                            .font(.subheadline)
+                            .foregroundColor(Color(hex: "#715428"))
+                            .padding(8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color(hex: "#715428"), lineWidth: 2)
+                            )
+                            .onTapGesture { isShowTableInfo.toggle() }
+                        Text("確定")
+                            .font(.subheadline)
+                            .foregroundColor(Color(hex: "#715428"))
+                            .padding(8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color(hex: "#715428"), lineWidth: 2)
+                            )
+                            .onTapGesture {
+                                let res = vm.updateTableInfo()
+                                if res { isShowTableInfo.toggle() }
+                            }
+                    }
+                    .bold()
+                    
+                    Text(vm.updateTableErrorMessage)
+                        .foregroundColor(Color.red)
+                        .font(.headline)
+                }
             }
             .frame(width: 200, height: 180)
             .padding()
@@ -285,11 +311,13 @@ struct MerchantRoomSpaceItemSection: View {
     var body: some View {
         ForEach(selectItemType == .newAppend ? vm.newRoomItemsInfo : vm.oldRoomItemsInfo) { itemInfo in
             VStack {
-                if itemInfo.item == .door {
+                if itemInfo.isDelete {
+                    EmptyView()
+                } else if itemInfo.info.item == .door {
                     Image(systemName: "door.right.hand.closed")
-                } else if itemInfo.item == .table {
+                } else if itemInfo.info.item == .table {
                     Image(systemName: "table.furniture")
-                        .scaleEffect(vm.selectedRoomItem.uid == itemInfo.uid ? 1.2 : 1)
+                        .scaleEffect(vm.selectedRoomItem.info.uid == itemInfo.info.uid ? 1.2 : 1)
                         .onTapGesture {
                             vm.updateTableErrorMessage = ""
                             if isShowTableInfo { isShowTableInfo = vm.selectedRoomItem != itemInfo }
@@ -297,18 +325,18 @@ struct MerchantRoomSpaceItemSection: View {
                             vm.selectedItemFrom = selectItemType
                             vm.selectedRoomItem = itemInfo
                         }
-                } else if itemInfo.item == .verticalWall {
+                } else if itemInfo.info.item == .verticalWall {
                     Image(systemName: "line.diagonal")
                         .rotationEffect(Angle(degrees: 45))
                         .fontWeight(.heavy)
-                } else if itemInfo.item == .horizontalWall {
+                } else if itemInfo.info.item == .horizontalWall {
                     Image(systemName: "line.diagonal")
                         .rotationEffect(Angle(degrees: -45))
                         .fontWeight(.heavy)
                 }
             }
-            .offset(x: itemInfo.offset.width + (vm.selectedRoomItem == itemInfo ? currentOffset.width : 0),
-                    y: itemInfo.offset.height + (vm.selectedRoomItem ==  itemInfo ? currentOffset.height : 0))
+            .offset(x: itemInfo.info.offset.width + (vm.selectedRoomItem == itemInfo ? currentOffset.width : 0),
+                    y: itemInfo.info.offset.height + (vm.selectedRoomItem ==  itemInfo ? currentOffset.height : 0))
             .gesture(
                 DragGesture()
                     .onChanged { value in

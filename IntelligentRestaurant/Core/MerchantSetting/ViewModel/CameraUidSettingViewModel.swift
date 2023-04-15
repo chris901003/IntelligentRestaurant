@@ -15,6 +15,8 @@ class CameraUidSettingViewModel: ObservableObject {
     @Published var processErrorMessage: String = ""
     @Published var tablesInfo: [(String, String)] = []
     
+    private var merchantUid: String = MerchantShareInfoManager.instance.merchantAccount.uid
+    
     // Init Function
     init() {
         Task { await loadTableInfo() }
@@ -38,5 +40,11 @@ class CameraUidSettingViewModel: ObservableObject {
         await MainActor.run {
             isProcessing.toggle()
         }
+    }
+    
+    private func fetchAllTable() async -> Bool {
+        let allTableInfoQueryModel = AllTableInfoQueryModel(merchantUid: merchantUid)
+//        let fetch
+        return true
     }
 }
