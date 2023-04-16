@@ -20,4 +20,17 @@ extension String {
         let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordFormat)
         return passwordTest.evaluate(with: self)
     }
+    
+    func secToMin() -> String {
+        guard let sec = Int(self) else { return "-1" }
+        let min = sec / 60
+        return "\(min)"
+    }
+    
+    func secToMinAndSec() -> String {
+        guard var sec = Int(self) else { return "-1" }
+        let min = sec / 60
+        sec = sec % 60;
+        return "\(min):\(sec)"
+    }
 }

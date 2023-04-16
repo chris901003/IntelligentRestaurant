@@ -34,7 +34,7 @@ struct MerchantFoodDetailView: View {
         HStack {
             Text("剩餘時間")
                 .padding(.horizontal)
-            Text("\(foodInfo.foodRemainTime)分鐘")
+            Text("\(foodInfo.foodRemainTime.secToMin())分鐘")
                 .padding(.horizontal)
                 .padding(.vertical, 8)
                 .foregroundColor(Color.white)

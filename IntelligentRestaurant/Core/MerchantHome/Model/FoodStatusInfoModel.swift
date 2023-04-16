@@ -8,7 +8,7 @@
 import Foundation
 
 /// 食物當前狀態
-struct FoodStatusInfoModel: Identifiable {
+struct FoodStatusInfoModel: Identifiable, Codable {
     var uid: String
     var name: String
     var trackId: String
@@ -43,17 +43,15 @@ extension FoodStatusInfoModel {
 
 struct FoodStatusChartModel: Identifiable {
     var id = UUID()
-    var remain: Int
+    var remain: Double
     var time: Int
     
     init(remain: String, time: Int) {
-        var tmpRemain = remain
-        let _  = tmpRemain.popLast()
-        self.remain = Int(tmpRemain) ?? 0
+        self.remain = Double(remain) ?? 0
         self.time = time
     }
     
-    init(remain: Int, time: Int) {
+    init(remain: Double, time: Int) {
         self.remain = remain
         self.time = time
     }

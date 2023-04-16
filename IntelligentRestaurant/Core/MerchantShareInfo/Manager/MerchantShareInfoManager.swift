@@ -16,7 +16,7 @@ class MerchantShareInfoManager: ObservableObject {
     // Published Variable
     @Published var isLogin: Bool = false
     @Published var userMode: UserMode = .merchant
-    @Published var tabViewSelect = 2
+    @Published var tabViewSelect = 1
     @Published var settingModeSelect: [Int] = []
     
     @Published var merchantAccount: MerchantAccountModel = MerchantAccountModel()

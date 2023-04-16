@@ -24,7 +24,7 @@ struct MerchantTablePreviewView: View {
                             Text(infoIdx)
                                 .font(.caption)
                             VStack {
-                                Text(foodStatusInfo.foodRemainTime)
+                                Text(foodStatusInfo.foodRemainTime.secToMin())
                                     .font(.subheadline)
                                 Text(foodStatusInfo.foodRemain)
                                     .font(.caption)
