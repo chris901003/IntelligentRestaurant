@@ -48,9 +48,16 @@ extension MerchantRoomSpaceItemModel {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         uid = try container.decode(String.self, forKey: .uid)
-        name = try container.decode(String.self, forKey: .name)
-        let capacityStr = try container.decode(String.self, forKey: .capacity)
-        self.capacity = Int(capacityStr)!
+        if let name = try? container.decode(String.self, forKey: .name) {
+            self.name = name
+        } else {
+            self.name = ""
+        }
+        if let capacityStr = try? container.decode(String.self, forKey: .capacity) {
+            self.capacity = Int(capacityStr)!
+        } else {
+            self.capacity = 0
+        }
         let tmpOffset = try container.decode([String].self, forKey: .offset)
         let offsetWidth = Double(tmpOffset[0]) ?? 0
         let offsetHeight = Double(tmpOffset[1]) ?? 0

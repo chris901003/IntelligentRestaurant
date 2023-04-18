@@ -31,7 +31,9 @@ class MerchantRoomSpaceViewModel: ObservableObject {
     private var isChangeCancellable: AnyCancellable? = nil
     private var originalItemsInfo: [MerchantRoomSpaceItemModelExt] = []
     private let allTableInfoDatabaseUrl: String = "http://120.126.151.186/API/eating/table/all-table-info"
-    private let tableItemDatabaseUrl: String = "http://120.126.151.186/API/eating/table"
+    private let roomTableDatabaseUrl: String = "http://120.126.151.186/API/eating/table"
+    private let roomItemDatabaseUrl: String = "http://120.126.151.186/API/eating/item"
+    private let allRoomItemDatabaseUrl: String = "http://120.126.151.186/API/eating/item/all-item-of-merchant"
     
     // Init Function
     init() {
@@ -154,7 +156,17 @@ class MerchantRoomSpaceViewModel: ObservableObject {
             return
         }
         
-        // TODO: 還有其他物件需要新增以及更新
+        // 將就的其他物件更新
+        guard await updateOtherItem() else {
+            await processErrorHandler(errorStatus: UpdateItemError.updateOldOtherItemError)
+            return
+        }
+        
+        // 將新的其他物件上傳到後端
+        guard await addNewOtherItem() else {
+            await processErrorHandler(errorStatus: UpdateItemError.uploadOtherItemError)
+            return
+        }
         
         await MainActor.run {
             // 將新物件放到舊物件當中，不需重新從後端提取資料
@@ -260,6 +272,31 @@ extension MerchantRoomSpaceViewModel {
     
     /// 獲取其他物件資料
     private func getAllOtherItemInfo() async -> Bool {
+        let allItemQueryModel = AllTableInfoQueryModel(merchantUid: merchantUid)
+        let fetchResult = await DatabaseManager.shared.uploadData(to: allRoomItemDatabaseUrl, data: allItemQueryModel)
+        switch fetchResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                guard let allRoomItems = try? JSONDecoder().decode([MerchantRoomSpaceItemModel].self, from: returnedResult.0) else {
+                    await processErrorHandler(errorStatus: InitError.otherItemTransferError)
+                    return false
+                }
+                await MainActor.run {
+                    for roomItem in allRoomItems {
+                        oldRoomItemsInfo.append(.init(info: roomItem))
+                    }
+                    originalItemsInfo = oldRoomItemsInfo
+                }
+            default:
+                let serverErrorMessage = returnedResult.0.tranformToString() ?? "請檢查服務器回傳資訊"
+                await processErrorHandler(errorStatus: InitError.getAllOtherInfoError, customMessage: serverErrorMessage)
+                return false
+            }
+        case .failure(_):
+            await processErrorHandler(errorStatus: InitError.getAllOtherInfoError)
+            return false
+        }
         return true
     }
 }
@@ -294,7 +331,7 @@ extension MerchantRoomSpaceViewModel {
     private func addNewTable() async -> Bool {
         for newItem in newRoomItemsInfo {
             guard newItem.info.item == .table, !newItem.isDelete else { continue }
-            let uploadResult = await DatabaseManager.shared.uploadData(to: tableItemDatabaseUrl, data: newItem.info)
+            let uploadResult = await DatabaseManager.shared.uploadData(to: roomTableDatabaseUrl, data: newItem.info)
             switch uploadResult {
             case .success(let result):
                 guard let tableUid = result.0.tranformToString() else {
@@ -319,7 +356,7 @@ extension MerchantRoomSpaceViewModel {
             guard oldRoomItemsInfo[idx].info.item == .table else { continue }
             if(originalItemsInfo[idx] == oldRoomItemsInfo[idx]) { continue }
             if oldRoomItemsInfo[idx].isDelete {
-                let deleteResult = await DatabaseManager.shared.uploadData(to: tableItemDatabaseUrl, data: oldRoomItemsInfo[idx].info, httpMethod: "Delete")
+                let deleteResult = await DatabaseManager.shared.uploadData(to: roomTableDatabaseUrl, data: oldRoomItemsInfo[idx].info, httpMethod: "Delete")
                 switch deleteResult {
                 case .success(_):
                     break
@@ -327,7 +364,56 @@ extension MerchantRoomSpaceViewModel {
                     return false
                 }
             } else {
-                let updateResult = await DatabaseManager.shared.uploadData(to: tableItemDatabaseUrl, data: oldRoomItemsInfo[idx].info, httpMethod: "PUT")
+                let updateResult = await DatabaseManager.shared.uploadData(to: roomTableDatabaseUrl, data: oldRoomItemsInfo[idx].info, httpMethod: "PUT")
+                switch updateResult {
+                case .success(_):
+                    break
+                case .failure(_):
+                    return false
+                }
+            }
+        }
+        return true
+    }
+    
+    /// 將新的其他資料上傳
+    private func addNewOtherItem() async -> Bool {
+        for newItem in newRoomItemsInfo {
+            guard newItem.info.item != .table else { continue }
+            // 上傳其他物件
+            let uploadResult = await DatabaseManager.shared.uploadData(to: roomItemDatabaseUrl, data: newItem.info)
+            switch uploadResult {
+            case .success(let returnedResult):
+                guard let itemUid = returnedResult.0.tranformToString() else {
+                    await processErrorHandler(errorStatus: UpdateItemError.uploadOtherItemReturnUidError)
+                    return false
+                }
+                let itemInfo = MerchantRoomSpaceItemModelExt(info: .init(uid: itemUid, item: newItem.info.item, name: newItem.info.name, capacity: newItem.info.capacity, offset: newItem.info.offset, merchantUid: newItem.info.merchantUid))
+                await MainActor.run {
+                    oldRoomItemsInfo.append(itemInfo)
+                }
+            case .failure(_):
+                return false
+            }
+        }
+        return true
+    }
+    
+    /// 更新舊的其他物件資料
+    private func updateOtherItem() async -> Bool {
+        for idx in originalItemsInfo.indices {
+            guard originalItemsInfo[idx].info.item != .table,
+                  originalItemsInfo[idx] != oldRoomItemsInfo[idx] else { continue }
+            if oldRoomItemsInfo[idx].isDelete {
+                let deleteResult = await DatabaseManager.shared.uploadData(to: roomItemDatabaseUrl, data: oldRoomItemsInfo[idx].info, httpMethod: "Delete")
+                switch deleteResult {
+                case .success(_):
+                    break
+                case .failure(_):
+                    return false
+                }
+            } else {
+                let updateResult = await DatabaseManager.shared.uploadData(to: roomItemDatabaseUrl, data: oldRoomItemsInfo[idx].info, httpMethod: "PUT")
                 switch updateResult {
                 case .success(_):
                     break
@@ -351,6 +437,7 @@ extension MerchantRoomSpaceViewModel {
         case getAllTableInfoError = "桌子資料初始化失敗，請確認網路連線狀態"
         case allTableInfoTransferError = "所有桌子資料轉換錯誤"
         case getAllOtherInfoError = "獲取剩餘其他物件失敗，請確認網路連線狀態"
+        case otherItemTransferError = "其他物件資訊轉換錯誤"
     }
     
     enum UpdateItemError: String, LocalizedError {
@@ -360,5 +447,8 @@ extension MerchantRoomSpaceViewModel {
         case uploadNewTableError = "上傳新桌子失敗，請確認網路狀態"
         case updateOldTableError = "更新舊桌子失敗，請確認網路狀態"
         case returnedTableUidError = "資料庫回傳桌子Uid錯誤"
+        case uploadOtherItemError = "上傳其他物件失敗，請確認網路連線狀態"
+        case uploadOtherItemReturnUidError = "回傳物件uid資料錯誤"
+        case updateOldOtherItemError = "更新舊物件失敗，請確認網路連線"
     }
 }

@@ -100,15 +100,18 @@ class MerchantHomeViewModel: ObservableObject {
             case 200:
                 guard let allTableWithFoodInfo = try? JSONDecoder().decode(AllTableWithFoodInfoModel.self, from: returnedResult.0) else {
                     await processErrorHandler(errorStatus: UniversalError.fetchEmptyData)
+                    await MainActor.run {
+                        tablesFoodsInfo = [:]
+                    }
                     return false
                 }
-                var oldTableName = Set<String>()
-                for tableName in tablesFoodsInfo.keys {
-                    oldTableName.insert(tableName)
-                }
-                for (tableName, foodsInfo) in allTableWithFoodInfo.results {
-                    oldTableName.remove(tableName)
-                    await MainActor.run {
+                await MainActor.run {
+                    var oldTableName = Set<String>()
+                    for tableName in tablesFoodsInfo.keys {
+                        oldTableName.insert(tableName)
+                    }
+                    for (tableName, foodsInfo) in allTableWithFoodInfo.results {
+                        oldTableName.remove(tableName)
                         if !tableChoiceList.contains(tableName) {
                             tableChoiceList.append(tableName)
                         }
@@ -126,9 +129,9 @@ class MerchantHomeViewModel: ObservableObject {
                             tablesFoodsInfo[tableName]?.removeValue(forKey: foodUid)
                         }
                     }
-                }
-                for tableName in oldTableName {
-                    tablesFoodsInfo.removeValue(forKey: tableName)
+                    for tableName in oldTableName {
+                        tablesFoodsInfo.removeValue(forKey: tableName)
+                    }
                 }
             default:
                 let message = returnedResult.0.tranformToString() ?? "Status Code: \(returnedResult.1)"

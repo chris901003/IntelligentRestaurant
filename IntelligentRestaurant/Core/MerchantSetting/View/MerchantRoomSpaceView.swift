@@ -327,11 +327,11 @@ struct MerchantRoomSpaceItemSection: View {
                         }
                 } else if itemInfo.info.item == .verticalWall {
                     Image(systemName: "line.diagonal")
-                        .rotationEffect(Angle(degrees: 45))
+                        .rotationEffect(Angle(degrees: -45))
                         .fontWeight(.heavy)
                 } else if itemInfo.info.item == .horizontalWall {
                     Image(systemName: "line.diagonal")
-                        .rotationEffect(Angle(degrees: -45))
+                        .rotationEffect(Angle(degrees: 45))
                         .fontWeight(.heavy)
                 }
             }
