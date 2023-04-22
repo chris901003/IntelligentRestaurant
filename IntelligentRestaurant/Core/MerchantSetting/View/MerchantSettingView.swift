@@ -53,11 +53,17 @@ struct MerchantSettingView: View {
                     .foregroundColor(Color.black)
                     .withMerchantSettingCardModifier()
             }
+            NavigationLink(value: 5) {
+                Text("模型再訓練")
+                    .foregroundColor(Color.black)
+                    .withMerchantSettingCardModifier()
+            }
             .navigationDestination(for: Int.self) { info in
                 if info == 1 { SettingModelWeightView().edgesIgnoringSafeArea(.top) }
                 else if info == 2 { MerchantRoomSpaceView().edgesIgnoringSafeArea(.top) }
                 else if info == 3 { CustomerViewInfoView().edgesIgnoringSafeArea(.top) }
                 else if info == 4 { CameraUidSettingView().edgesIgnoringSafeArea(.top) }
+                else if info == 5 { ModelTrainDataView().edgesIgnoringSafeArea(.top) }
             }
         }
     }
