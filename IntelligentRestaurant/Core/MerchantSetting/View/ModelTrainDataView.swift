@@ -15,6 +15,7 @@ struct ModelTrainDataView: View {
     @State var boxOffset: CGSize = .zero
     @State var tmpOffset: CGSize = .zero
     @State var boxFrame: CGSize = .init(width: 150, height: 150)
+    @State var isShowSelectCategory: Bool = false
     
     // Private Variable
     private let minBoxWidth: CGFloat = 50
@@ -34,6 +35,10 @@ struct ModelTrainDataView: View {
                 Spacer()
             }
             .padding(.top, 72)
+            
+            if isShowSelectCategory {
+                categorySelectSection
+            }
             
             if vm.isProcessing {
                 LoadingView(waitingInfo: vm.loadingMessage, isProgressView: true)
@@ -63,7 +68,7 @@ struct ModelTrainDataView: View {
             Text("資料上傳")
                 .withTopBarButtonModifier(color: Color(hex: "#9B7E6E"))
                 .onTapGesture {
-                    Task { await vm.uploadTrainData(boxFrame: boxFrame, boxOffset: boxOffset) }
+                    isShowSelectCategory.toggle()
                 }
         }
         .font(.headline)
@@ -197,6 +202,51 @@ struct ModelTrainDataView: View {
                 .offset(x: boxOffset.width + tmpOffset.width, y: boxOffset.height + tmpOffset.height)
             }
             .frame(width: boxFrame.width, height: boxFrame.height)
+        }
+    }
+    
+    private var categorySelectSection: some View {
+        ZStack {
+            Color.black.opacity(0.01)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onTapGesture { isShowSelectCategory.toggle() }
+            
+            VStack {
+                HStack {
+                    Image(systemName: "xmark")
+                        .foregroundColor(Color.pink)
+                        .frame(width: 30, height: 30)
+                        .onTapGesture { isShowSelectCategory.toggle() }
+                    Spacer()
+                }
+                .padding(.top, 8)
+                .padding(.leading, 8)
+                Text("選擇食物類型")
+                    .font(.headline)
+                ScrollView(showsIndicators: false) {
+                    ForEach(vm.categoryList, id: \.self.1) { category in
+                        Text(category.0)
+                            .font(.headline)
+                            .frame(width: 100, height: 45)
+                            .background(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color(hex: "#9B7E6E"), lineWidth: 2)
+                            )
+                            .padding(8)
+                            .onTapGesture {
+                                vm.selectedCategory = category.1
+                                isShowSelectCategory.toggle()
+                                Task { await vm.uploadTrainData(boxFrame: boxFrame, boxOffset: boxOffset) }
+                            }
+                    }
+                }
+                Spacer()
+            }
+            .frame(width: 250, height: 300)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundStyle(Color.white.shadow(.drop(radius: 5)))
+            )
         }
     }
     

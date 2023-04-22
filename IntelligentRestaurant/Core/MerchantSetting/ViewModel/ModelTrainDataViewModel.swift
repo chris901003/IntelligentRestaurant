@@ -21,8 +21,10 @@ class ModelTrainDataViewModel: ObservableObject {
     // Public Variable
     var imageWidth: CGFloat = 0
     var imageHeight: CGFloat = 0
+    var selectedCategory: String = "0"
     var processErrorMessage: String = ""
     var loadingMessage: String = ""
+    let categoryList: [(String, String)] = [("Donburi", "0"), ("SoupRice", "1"), ("Rice", "2"), ("Countable", "3"), ("SoupNoodle", "4"), ("Noodle", "5"), ("SideDish", "6"), ("SolidSoup", "7"), ("Soup", "8")]
     
     // Private Variable
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
@@ -56,7 +58,7 @@ class ModelTrainDataViewModel: ObservableObject {
         let maxY = (boxFrame.height / 2 + boxOffset.height + imageHeight / 2) / imageHeight
         
         // 這裡需要改成指定的類別
-        let labelInfo = "\(minX) \(minY) \(maxX) \(maxY) 0"
+        let labelInfo = "\(selectedCategory) \(minX) \(minY) \(maxX) \(maxY)"
         let trainDataInfo = ObjectDetectionTrainDataModel(uid: uid, image: imageData, labelInfo: labelInfo)
         let uploadResult = await DatabaseManager.shared.uploadData(to: trainDataDatabaseURL, data: trainDataInfo)
         switch uploadResult {
