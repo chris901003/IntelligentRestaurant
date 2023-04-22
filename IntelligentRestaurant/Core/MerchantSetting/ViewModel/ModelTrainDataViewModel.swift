@@ -13,6 +13,7 @@ class ModelTrainDataViewModel: ObservableObject {
     
     // Published Variable
     @Published var trainImage: UIImage? = nil
+    @Published var trainImageCount: String = ""
     
     @Published var isProcessing: Bool = false
     @Published var isProcessError: Bool = false
@@ -29,6 +30,8 @@ class ModelTrainDataViewModel: ObservableObject {
     // Private Variable
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
     private let trainDataDatabaseURL = "http://120.126.151.186/API/eating/model-weight/upload-object-detection-single-image"
+    private let trainDataCountURL = "http://120.126.151.186/API/eating/model-weight/object-detection-train-image-count"
+    private let trainModelURL = "http://120.126.151.186/API/eating/model-weight/train-object-detection-model"
     
     // Public Function
     /// 將所選圖像轉成UIImage型態
@@ -90,6 +93,60 @@ class ModelTrainDataViewModel: ObservableObject {
         }
     }
     
+    /// 獲取當前訓練圖像數量
+    func fetchTraiDataCount() async {
+        let fetchModel: AllTableInfoQueryModel = AllTableInfoQueryModel(merchantUid: uid)
+        let fetchResult = await DatabaseManager.shared.uploadData(to: trainDataCountURL, data: fetchModel)
+        await MainActor.run {
+            switch fetchResult {
+            case .success(let returnedResult):
+                guard let serverMessage = returnedResult.0.tranformToString() else {
+                    trainImageCount = "服務器資料轉換錯誤"
+                    return
+                }
+                trainImageCount = serverMessage
+            case .failure(_):
+                trainImageCount = "請稍後再試"
+            }
+        }
+    }
+    
+    /// 開始訓練目標檢測模型
+    func startTrainModel() async -> Bool {
+        await MainActor.run {
+            loadingMessage = "請求訓練中"
+            isProcessing.toggle()
+        }
+        
+        let queryModel = AllTableInfoQueryModel(merchantUid: uid)
+        let queryResult = await DatabaseManager.shared.uploadData(to: trainModelURL, data: queryModel, timeout: 2)
+        switch queryResult {
+        case .success(_):
+            break
+        case .failure(let errorStatus):
+            switch errorStatus {
+            case .responseTimeOut:
+                // 在請求訓練時一定會超時，因為訓練需要時間，所以當超時表示已經正在訓練
+                break
+            default:
+                await processErrorHandler(errorStatus: TrainModelError.queryError)
+                return false
+            }
+        }
+        
+        await MainActor.run {
+            isProcessing.toggle()
+            loadingMessage = "請求成功"
+            isProcessing.toggle()
+        }
+        try? await Task.sleep(nanoseconds: 2_000_000_000)
+        await MainActor.run {
+            isProcessing.toggle()
+            loadingMessage = ""
+        }
+        return true
+    }
+    
     // Private Function
     /// 處理中發生錯誤
     private func processErrorHandler(errorStatus: any RawRepresentable, customMessage: String = "") async {
@@ -112,5 +169,9 @@ extension ModelTrainDataViewModel {
         case withoutTrainImage = "缺少圖像資料"
         case uploadError = "上傳失敗"
         case serverResponseError = "服務器回傳訊息錯誤"
+    }
+    
+    enum TrainModelError: String, LocalizedError {
+        case queryError = "請求失敗，請確認網路狀態"
     }
 }

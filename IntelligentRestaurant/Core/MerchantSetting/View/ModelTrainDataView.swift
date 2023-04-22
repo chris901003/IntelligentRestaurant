@@ -10,12 +10,16 @@ import PhotosUI
 
 struct ModelTrainDataView: View {
     
+    // 接下來要將「模型再訓練」點下去後分成「第一階段」以及「第二階段」兩個選擇，並且完成資料庫上標註正在訓練中
+    // 在進入兩個畫面前都需要檢查該使用者是否正在訓練，如果正在訓練就需要禁止進入
     @StateObject var vm: ModelTrainDataViewModel = ModelTrainDataViewModel()
+    @Environment(\.dismiss) var dismissView
     @State var selectedPhotoItem: PhotosPickerItem? = nil
     @State var boxOffset: CGSize = .zero
     @State var tmpOffset: CGSize = .zero
     @State var boxFrame: CGSize = .init(width: 150, height: 150)
     @State var isShowSelectCategory: Bool = false
+    @State var isShowTrainAlert: Bool = false
     
     // Private Variable
     private let minBoxWidth: CGFloat = 50
@@ -31,13 +35,16 @@ struct ModelTrainDataView: View {
                 topBarButton
                 Spacer()
                 bodySection
-                
                 Spacer()
             }
             .padding(.top, 72)
             
             if isShowSelectCategory {
                 categorySelectSection
+            }
+            
+            if isShowTrainAlert {
+                confirmTrainModel
             }
             
             if vm.isProcessing {
@@ -60,15 +67,20 @@ struct ModelTrainDataView: View {
                 .onTapGesture {
                     MerchantShareInfoManager.instance.settingModeSelect = []
                 }
-            Spacer()
             PhotosPicker(selection: $selectedPhotoItem, matching: .images, photoLibrary: .shared()) {
                 Text("選擇圖像")
                     .withTopBarButtonModifier(color: Color.blue)
             }
-            Text("資料上傳")
+            Text("上傳")
                 .withTopBarButtonModifier(color: Color(hex: "#9B7E6E"))
                 .onTapGesture {
                     isShowSelectCategory.toggle()
+                }
+            Text("開始訓練")
+                .withTopBarButtonModifier(color: Color.pink)
+                .onTapGesture {
+                    Task { await vm.fetchTraiDataCount() }
+                    isShowTrainAlert.toggle()
                 }
         }
         .font(.headline)
@@ -245,6 +257,62 @@ struct ModelTrainDataView: View {
             .frame(width: 250, height: 300)
             .background(
                 RoundedRectangle(cornerRadius: 20)
+                    .foregroundStyle(Color.white.shadow(.drop(radius: 5)))
+            )
+        }
+    }
+    
+    private var confirmTrainModel: some View {
+        ZStack {
+            Color.white.opacity(0.01)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onTapGesture { isShowTrainAlert.toggle() }
+            VStack {
+                HStack {
+                    Image(systemName: "xmark")
+                        .foregroundColor(Color.pink)
+                        .frame(width: 30, height: 30)
+                        .onTapGesture { isShowTrainAlert.toggle() }
+                    Spacer()
+                }
+                .padding(.top, 8)
+                .padding(.leading, 8)
+                Text("訓練第一階段模型")
+                    .padding(.bottom, 8)
+                Text("目前擁有\(vm.trainImageCount)張圖像資料")
+                    .font(.title2)
+                    .padding(.bottom, 8)
+                Group {
+                    Text("在訓練過程中依舊可以正常使用本系統")
+                    Text("但是會關閉上傳資料的服務")
+                    Text("等到訓練完畢就會重新開啟資料上傳服務")
+                    Text("訓練後不刪除原先上傳的資料")
+                    Text("若要刪除資料請到刪除頁面中刪除")
+                }
+                .font(.footnote)
+                .foregroundColor(Color.secondary)
+                Spacer()
+                Text("開始訓練")
+                    .font(.headline)
+                    .padding(8)
+                    .foregroundColor(Color.blue)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.blue, lineWidth: 2)
+                    )
+                    .onTapGesture {
+                        Task {
+                            let queryResult = await vm.startTrainModel()
+                            if queryResult {
+                                dismissView()
+                            }
+                        }
+                    }
+                    .padding()
+            }
+            .frame(width: 300, height: 280)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
                     .foregroundStyle(Color.white.shadow(.drop(radius: 5)))
             )
         }

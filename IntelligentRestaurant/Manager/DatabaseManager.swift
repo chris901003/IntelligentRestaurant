@@ -20,7 +20,7 @@ class DatabaseManager {
     
     // Public Function
     /// 將資料上傳到資料庫
-    func uploadData(to urlString: String, data: Encodable, httpMethod: String = "POST") async -> Result<(Data, Int), uploadDataError> {
+    func uploadData(to urlString: String, data: Encodable, httpMethod: String = "POST", timeout: Double = 5) async -> Result<(Data, Int), uploadDataError> {
         guard let url = URL(string: urlString) else { return .failure(.urlError) }
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod
@@ -28,13 +28,22 @@ class DatabaseManager {
         guard let data = try? jsonEncoder.encode(data) else { return .failure(.encodeError) }
         request.httpBody = data
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForResource = 5
-        configuration.timeoutIntervalForRequest = 5
+        configuration.timeoutIntervalForResource = timeout
+        configuration.timeoutIntervalForRequest = timeout
         let session = URLSession(configuration: configuration)
-        guard let (data, response) = try? await session.data(for: request) else { return .failure(.httpConnectError) }
-        guard let response = response as? HTTPURLResponse else { return .failure(.responseCodeError) }
-        let statusCode = response.statusCode
-        return .success((data, statusCode))
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let response = response as? HTTPURLResponse else { return .failure(.responseCodeError) }
+            let statusCode = response.statusCode
+            return .success((data, statusCode))
+        } catch {
+            switch error.localizedDescription {
+            case "The request timed out.":
+                return .failure(.responseTimeOut)
+            default:
+                return .failure(.httpConnectError)
+            }
+        }
     }
 }
 
@@ -46,5 +55,6 @@ extension DatabaseManager {
         case encodeError = "資料Encode失敗"
         case httpConnectError = "網路發生錯誤，請稍後再試"
         case responseCodeError = "Http狀態碼錯誤"
+        case responseTimeOut = "請求超時"
     }
 }
