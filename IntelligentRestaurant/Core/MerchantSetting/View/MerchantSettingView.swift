@@ -11,6 +11,7 @@ import SwiftUI
 struct MerchantSettingView: View {
     
     @StateObject var vm: MerchantSettingViewModel = MerchantSettingViewModel()
+    @State var isShowSelectTrainStep: Bool = false
     
     var body: some View {
         NavigationStack(path: $vm.navigationPath) {
@@ -26,6 +27,40 @@ struct MerchantSettingView: View {
                     Spacer()
                 }
                 .padding(.top, 72)
+                
+                if isShowSelectTrainStep {
+                    ZStack {
+                        Color.black.opacity(0.5).onTapGesture { withAnimation { isShowSelectTrainStep.toggle() } }
+                        
+                        VStack {
+                            HStack {
+                                Image(systemName: "xmark")
+                                    .foregroundColor(Color.pink)
+                                    .onTapGesture { withAnimation { isShowSelectTrainStep.toggle() } }
+                                Spacer()
+                            }
+                            Text("選擇資料類型")
+                                .font(.title3)
+                                .bold()
+                            NavigationLink(value: 6) {
+                                Text("第一階段資料")
+                                    .withMerchantSettingCardModifier()
+                                    .foregroundColor(Color.black)
+                            }
+                            NavigationLink(value: 7) {
+                                Text("第二階段資料")
+                                    .withMerchantSettingCardModifier()
+                                    .foregroundColor(Color.black)
+                            }
+                        }
+                        .font(.headline)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                    }
+                }
+                
             }
             .edgesIgnoringSafeArea(.top)
         }
@@ -57,13 +92,15 @@ struct MerchantSettingView: View {
                 Text("模型再訓練")
                     .foregroundColor(Color.black)
                     .withMerchantSettingCardModifier()
+                    .onTapGesture { withAnimation { isShowSelectTrainStep.toggle() } }
             }
             .navigationDestination(for: Int.self) { info in
                 if info == 1 { SettingModelWeightView().edgesIgnoringSafeArea(.top) }
                 else if info == 2 { MerchantRoomSpaceView().edgesIgnoringSafeArea(.top) }
                 else if info == 3 { CustomerViewInfoView().edgesIgnoringSafeArea(.top) }
                 else if info == 4 { CameraUidSettingView().edgesIgnoringSafeArea(.top) }
-                else if info == 5 { ModelTrainDataView().edgesIgnoringSafeArea(.top) }
+                else if info == 6 { ModelObjectDetectionTrainDataView().edgesIgnoringSafeArea(.top) }
+                else if info == 7 { ModelSegmentationTrainView().edgesIgnoringSafeArea(.top) }
             }
         }
     }

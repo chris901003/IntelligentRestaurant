@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import PhotosUI
 
-class ModelTrainDataViewModel: ObservableObject {
+class ModelObjectDetectionTrainDataViewModel: ObservableObject {
     
     // Published Variable
     @Published var trainImage: UIImage? = nil
@@ -164,7 +164,7 @@ class ModelTrainDataViewModel: ObservableObject {
     }
 }
 
-extension ModelTrainDataViewModel {
+extension ModelObjectDetectionTrainDataViewModel {
     enum UploadTrainDataError: String, LocalizedError {
         case withoutTrainImage = "缺少圖像資料"
         case uploadError = "上傳失敗"

@@ -8,11 +8,11 @@
 import SwiftUI
 import PhotosUI
 
-struct ModelTrainDataView: View {
+struct ModelObjectDetectionTrainDataView: View {
     
     // 接下來要將「模型再訓練」點下去後分成「第一階段」以及「第二階段」兩個選擇，並且完成資料庫上標註正在訓練中
     // 在進入兩個畫面前都需要檢查該使用者是否正在訓練，如果正在訓練就需要禁止進入
-    @StateObject var vm: ModelTrainDataViewModel = ModelTrainDataViewModel()
+    @StateObject var vm: ModelObjectDetectionTrainDataViewModel = ModelObjectDetectionTrainDataViewModel()
     @Environment(\.dismiss) var dismissView
     @State var selectedPhotoItem: PhotosPickerItem? = nil
     @State var boxOffset: CGSize = .zero
@@ -31,7 +31,7 @@ struct ModelTrainDataView: View {
         ZStack {
             Color.theme.loginBackground
             VStack {
-                MerchantTopNavigationBarView(title: "模型再訓練", titleImage: "desktopcomputer")
+                MerchantTopNavigationBarView(title: "第一階段資料", titleImage: "desktopcomputer")
                 topBarButton
                 Spacer()
                 bodySection
@@ -329,7 +329,7 @@ struct ModelTrainDataView: View {
     }
 }
 
-extension ModelTrainDataView {
+extension ModelObjectDetectionTrainDataView {
     
     /// 查看此拖移屬於移動或是放大
     func checkDrageMode(tapPosition: CGPoint) -> DragMode {
