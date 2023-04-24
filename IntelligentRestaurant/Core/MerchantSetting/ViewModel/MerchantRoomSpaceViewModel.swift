@@ -282,12 +282,15 @@ extension MerchantRoomSpaceViewModel {
                     await processErrorHandler(errorStatus: InitError.otherItemTransferError)
                     return false
                 }
+                // 目前似乎在全空的狀態下會發生錯誤，以及桌子以外的物件無法刪除
                 await MainActor.run {
                     for roomItem in allRoomItems {
                         oldRoomItemsInfo.append(.init(info: roomItem))
                     }
                     originalItemsInfo = oldRoomItemsInfo
                 }
+            case 201:
+                break
             default:
                 let serverErrorMessage = returnedResult.0.tranformToString() ?? "請檢查服務器回傳資訊"
                 await processErrorHandler(errorStatus: InitError.getAllOtherInfoError, customMessage: serverErrorMessage)

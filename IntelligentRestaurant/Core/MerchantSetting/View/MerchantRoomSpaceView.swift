@@ -13,6 +13,7 @@ struct MerchantRoomSpaceView: View {
     @StateObject var vm: MerchantRoomSpaceViewModel = MerchantRoomSpaceViewModel()
     @State var isShowTableInfo: Bool = false
     @State var isShowSaveAlert: Bool = false
+    @State var isShowItemInfo: Bool = false
     
     var body: some View {
         ZStack {
@@ -35,6 +36,59 @@ struct MerchantRoomSpaceView: View {
                     
                     if isShowTableInfo {
                         tableInfoSection
+                    }
+                    
+                    if isShowItemInfo {
+                        ZStack {
+                            Color.black.opacity(0.01).onTapGesture { isShowItemInfo.toggle() }
+                            VStack {
+                                HStack {
+                                    Image(systemName: "xmark")
+                                        .font(.headline)
+                                        .foregroundColor(Color.pink)
+                                        .onTapGesture { isShowItemInfo.toggle() }
+                                        .padding(.leading, 8)
+                                        .padding(.top, -8)
+                                    Spacer()
+                                }
+                                Text("是否要刪除物件")
+                                    .font(.title3)
+                                    .bold()
+                                    .padding(.vertical)
+                                HStack {
+                                    Text("取消")
+                                        .foregroundColor(Color.blue)
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 5)
+                                                .stroke(Color.blue, lineWidth: 3)
+                                        )
+                                        .onTapGesture { isShowItemInfo.toggle() }
+                                    Spacer()
+                                    Text("刪除")
+                                        .foregroundColor(Color.pink)
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 5)
+                                                .stroke(Color.pink, lineWidth: 3)
+                                        )
+                                        .onTapGesture {
+                                            isShowItemInfo.toggle()
+                                            vm.deleteTable()
+                                        }
+                                }
+                                .font(.headline)
+                                .padding(.horizontal)
+                            }
+                            .frame(width: 200)
+                            .padding(.vertical)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(Color.white.shadow(.drop(radius: 5)))
+                            )
+                        }
                     }
                 }
             }
@@ -106,9 +160,9 @@ struct MerchantRoomSpaceView: View {
     
     private var roomSpaceItemSection: some View {
         ZStack {
-            MerchantRoomSpaceItemSection(isShowTableInfo: $isShowTableInfo, selectItemType: .newAppend)
+            MerchantRoomSpaceItemSection(isShowTableInfo: $isShowTableInfo, isShowItemInfo: $isShowItemInfo, selectItemType: .newAppend)
                 .environmentObject(vm)
-            MerchantRoomSpaceItemSection(isShowTableInfo: $isShowTableInfo, selectItemType: .old)
+            MerchantRoomSpaceItemSection(isShowTableInfo: $isShowTableInfo, isShowItemInfo: $isShowItemInfo, selectItemType: .old)
                 .environmentObject(vm)
         }
         .frame(maxWidth: .infinity , maxHeight: .infinity)
@@ -305,6 +359,7 @@ struct MerchantRoomSpaceItemSection: View {
     @EnvironmentObject var vm: MerchantRoomSpaceViewModel
     @State var currentOffset: CGSize = .zero
     @Binding var isShowTableInfo: Bool
+    @Binding var isShowItemInfo: Bool
     
     var selectItemType: MerchantRoomSpaceViewModel.ItemFrom
     
@@ -315,6 +370,13 @@ struct MerchantRoomSpaceItemSection: View {
                     EmptyView()
                 } else if itemInfo.info.item == .door {
                     Image(systemName: "door.right.hand.closed")
+                        .onTapGesture {
+                            isShowTableInfo = false
+                            if isShowItemInfo { isShowItemInfo = vm.selectedRoomItem != itemInfo }
+                            else { isShowItemInfo.toggle() }
+                            vm.selectedItemFrom = selectItemType
+                            vm.selectedRoomItem = itemInfo
+                        }
                 } else if itemInfo.info.item == .table {
                     Image(systemName: "table.furniture")
                         .scaleEffect(vm.selectedRoomItem.info.uid == itemInfo.info.uid ? 1.2 : 1)
@@ -329,10 +391,24 @@ struct MerchantRoomSpaceItemSection: View {
                     Image(systemName: "line.diagonal")
                         .rotationEffect(Angle(degrees: -45))
                         .fontWeight(.heavy)
+                        .onTapGesture {
+                            isShowTableInfo = false
+                            if isShowItemInfo { isShowItemInfo = vm.selectedRoomItem != itemInfo }
+                            else { isShowItemInfo.toggle() }
+                            vm.selectedItemFrom = selectItemType
+                            vm.selectedRoomItem = itemInfo
+                        }
                 } else if itemInfo.info.item == .horizontalWall {
                     Image(systemName: "line.diagonal")
                         .rotationEffect(Angle(degrees: 45))
                         .fontWeight(.heavy)
+                        .onTapGesture {
+                            isShowTableInfo = false
+                            if isShowItemInfo { isShowItemInfo = vm.selectedRoomItem != itemInfo }
+                            else { isShowItemInfo.toggle() }
+                            vm.selectedItemFrom = selectItemType
+                            vm.selectedRoomItem = itemInfo
+                        }
                 }
             }
             .offset(x: itemInfo.info.offset.width + (vm.selectedRoomItem == itemInfo ? currentOffset.width : 0),
