@@ -10,7 +10,7 @@ import PhotosUI
 
 struct ModelSegmentationTrainView: View {
     
-    // 上傳以資料相關
+    // TODO: 上傳以資料相關
     
     @StateObject var vm: ModelSegmentationTrainViewModel = ModelSegmentationTrainViewModel()
     @State var selectPhotoItem: PhotosPickerItem? = nil

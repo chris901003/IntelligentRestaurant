@@ -26,6 +26,9 @@
 		052F569529F4033200CEF54E /* TrainDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F569429F4033200CEF54E /* TrainDataModel.swift */; };
 		052F56A429F6A65E00CEF54E /* ModelSegmentationTrainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56A329F6A65E00CEF54E /* ModelSegmentationTrainView.swift */; };
 		052F56A629F6A6B700CEF54E /* ModelSegmentationTrainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56A529F6A6B700CEF54E /* ModelSegmentationTrainViewModel.swift */; };
+		052F56AA29F81B8000CEF54E /* ReviewObjectDetectionDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */; };
+		052F56AC29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56AB29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift */; };
+		052F56AF29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56AE29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift */; };
 		053D1B2129BF1BF30092DC16 /* TableInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053D1B2029BF1BF30092DC16 /* TableInfoModel.swift */; };
 		053D1B2329BF21F80092DC16 /* SettingModelWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053D1B2229BF21F80092DC16 /* SettingModelWeightView.swift */; };
 		053D1B2529BF4B100092DC16 /* SettingModelWeightViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053D1B2429BF4B100092DC16 /* SettingModelWeightViewModel.swift */; };
@@ -89,6 +92,9 @@
 		052F569429F4033200CEF54E /* TrainDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDataModel.swift; sourceTree = "<group>"; };
 		052F56A329F6A65E00CEF54E /* ModelSegmentationTrainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSegmentationTrainView.swift; sourceTree = "<group>"; };
 		052F56A529F6A6B700CEF54E /* ModelSegmentationTrainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSegmentationTrainViewModel.swift; sourceTree = "<group>"; };
+		052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewObjectDetectionDataView.swift; sourceTree = "<group>"; };
+		052F56AB29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewObjectDetectionDataViewModel.swift; sourceTree = "<group>"; };
+		052F56AE29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewObjectDetectionDataModel.swift; sourceTree = "<group>"; };
 		053D1B2029BF1BF30092DC16 /* TableInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableInfoModel.swift; sourceTree = "<group>"; };
 		053D1B2229BF21F80092DC16 /* SettingModelWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModelWeightView.swift; sourceTree = "<group>"; };
 		053D1B2429BF4B100092DC16 /* SettingModelWeightViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModelWeightViewModel.swift; sourceTree = "<group>"; };
@@ -276,6 +282,30 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		052F56A729F81B4C00CEF54E /* SubView */ = {
+			isa = PBXGroup;
+			children = (
+				052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */,
+			);
+			path = SubView;
+			sourceTree = "<group>";
+		};
+		052F56A829F81B5200CEF54E /* SubViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				052F56AB29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift */,
+			);
+			path = SubViewModel;
+			sourceTree = "<group>";
+		};
+		052F56AD29F81C3A00CEF54E /* SubModel */ = {
+			isa = PBXGroup;
+			children = (
+				052F56AE29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift */,
+			);
+			path = SubModel;
+			sourceTree = "<group>";
+		};
 		053D1B2629BF4FA90092DC16 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -298,6 +328,9 @@
 		0597A11429BE131B00E327B2 /* MerchantSetting */ = {
 			isa = PBXGroup;
 			children = (
+				052F56AD29F81C3A00CEF54E /* SubModel */,
+				052F56A829F81B5200CEF54E /* SubViewModel */,
+				052F56A729F81B4C00CEF54E /* SubView */,
 				05405DF529EA5B3D0087D2ED /* HelperModel */,
 				053D1B2629BF4FA90092DC16 /* Model */,
 				0597A11829BE136400E327B2 /* ViewModel */,
@@ -624,10 +657,13 @@
 				0529AF3429BB60B300E5096E /* LandmarkModel.swift in Sources */,
 				05405DF129EA57810087D2ED /* DataExtension.swift in Sources */,
 				05996BBF29B8A97E00AF9664 /* MerchantShareInfoManager.swift in Sources */,
+				052F56AA29F81B8000CEF54E /* ReviewObjectDetectionDataView.swift in Sources */,
 				0529AF3929BB715E00E5096E /* MerchantMainView.swift in Sources */,
 				05996BB729B8A76900AF9664 /* MainView.swift in Sources */,
 				052F56A629F6A6B700CEF54E /* ModelSegmentationTrainViewModel.swift in Sources */,
+				052F56AC29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift in Sources */,
 				0529AF5129BC777700E5096E /* MerchantFoodDetailView.swift in Sources */,
+				052F56AF29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift in Sources */,
 				0529AF4829BC1AA600E5096E /* CoreLocationExtension.swift in Sources */,
 				059C66B229BAEF900086660B /* SelectLocationView.swift in Sources */,
 				0529AF3F29BB75E500E5096E /* MerchantHomeView.swift in Sources */,

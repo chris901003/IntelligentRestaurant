@@ -10,8 +10,7 @@ import PhotosUI
 
 struct ModelObjectDetectionTrainDataView: View {
     
-    // 接下來要將「模型再訓練」點下去後分成「第一階段」以及「第二階段」兩個選擇，並且完成資料庫上標註正在訓練中
-    // 在進入兩個畫面前都需要檢查該使用者是否正在訓練，如果正在訓練就需要禁止進入
+    // TODO: 在進入兩個畫面前都需要檢查該使用者是否正在訓練，如果正在訓練就需要禁止進入
     @StateObject var vm: ModelObjectDetectionTrainDataViewModel = ModelObjectDetectionTrainDataViewModel()
     @Environment(\.dismiss) var dismissView
     @State var selectedPhotoItem: PhotosPickerItem? = nil
@@ -33,6 +32,7 @@ struct ModelObjectDetectionTrainDataView: View {
             VStack {
                 MerchantTopNavigationBarView(title: "第一階段資料", titleImage: "desktopcomputer")
                 topBarButton
+                topBarSecondLine
                 Spacer()
                 bodySection
                 Spacer()
@@ -67,6 +67,7 @@ struct ModelObjectDetectionTrainDataView: View {
                 .onTapGesture {
                     MerchantShareInfoManager.instance.settingModeSelect = []
                 }
+            Spacer()
             PhotosPicker(selection: $selectedPhotoItem, matching: .images, photoLibrary: .shared()) {
                 Text("選擇圖像")
                     .withTopBarButtonModifier(color: Color.blue)
@@ -76,12 +77,6 @@ struct ModelObjectDetectionTrainDataView: View {
                 .onTapGesture {
                     isShowSelectCategory.toggle()
                 }
-            Text("開始訓練")
-                .withTopBarButtonModifier(color: Color.pink)
-                .onTapGesture {
-                    Task { await vm.fetchTraiDataCount() }
-                    isShowTrainAlert.toggle()
-                }
         }
         .font(.headline)
         .padding(8)
@@ -90,6 +85,27 @@ struct ModelObjectDetectionTrainDataView: View {
             guard let newValue = newValue else { return }
             Task { await vm.transferTrainImage(selecteItem:newValue) }
         }
+    }
+    
+    private var topBarSecondLine: some View {
+        HStack {
+            Spacer()
+            NavigationLink {
+                ReviewObjectDetectionDataView()
+                    .edgesIgnoringSafeArea(.top)
+            } label: {
+                Text("查看已上傳資料")
+                    .withTopBarButtonModifier(color: Color.orange)
+            }
+            Text("開始訓練")
+                .withTopBarButtonModifier(color: Color.pink)
+                .onTapGesture {
+                    Task { await vm.fetchTraiDataCount() }
+                    isShowTrainAlert.toggle()
+                }
+        }
+        .bold()
+        .padding(.horizontal, 8)
     }
     
     private var bodySection: some View {
