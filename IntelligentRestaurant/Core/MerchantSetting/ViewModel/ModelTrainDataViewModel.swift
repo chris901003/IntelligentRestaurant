@@ -59,9 +59,13 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
         let maxX = (boxFrame.width / 2 + boxOffset.width + imageWidth / 2) / imageWidth
         let minY = (-boxFrame.height / 2 + boxOffset.height + imageHeight / 2) / imageHeight
         let maxY = (boxFrame.height / 2 + boxOffset.height + imageHeight / 2) / imageHeight
+        let centerX = (minX + maxX) / 2
+        let centerY = (minY + maxY) / 2
+        let boxWidth = maxX - minX
+        let boxHeight = maxY - minY
         
         // 這裡需要改成指定的類別
-        let labelInfo = "\(selectedCategory) \(minX) \(minY) \(maxX) \(maxY)"
+        let labelInfo = "\(selectedCategory) \(centerX) \(centerY) \(boxWidth) \(boxHeight)"
         let trainDataInfo = ObjectDetectionTrainDataModel(uid: uid, image: imageData, labelInfo: labelInfo)
         let uploadResult = await DatabaseManager.shared.uploadData(to: trainDataDatabaseURL, data: trainDataInfo)
         switch uploadResult {
@@ -100,11 +104,18 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
         await MainActor.run {
             switch fetchResult {
             case .success(let returnedResult):
-                guard let serverMessage = returnedResult.0.tranformToString() else {
-                    trainImageCount = "服務器資料轉換錯誤"
-                    return
+                switch returnedResult.1 {
+                case 200:
+                    guard let serverMessage = returnedResult.0.tranformToString() else {
+                        trainImageCount = "服務器錯誤"
+                        return
+                    }
+                    trainImageCount = serverMessage
+                case 201:
+                    trainImageCount = "0"
+                default:
+                    trainImageCount = "服務器錯誤"
                 }
-                trainImageCount = serverMessage
             case .failure(_):
                 trainImageCount = "請稍後再試"
             }
@@ -116,6 +127,11 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
         await MainActor.run {
             loadingMessage = "請求訓練中"
             isProcessing.toggle()
+        }
+        
+        guard Int(trainImageCount)! >= 10 else {
+            await processErrorHandler(errorStatus: TrainModelError.trainDataEmpty)
+            return false
         }
         
         let queryModel = AllTableInfoQueryModel(merchantUid: uid)
@@ -172,6 +188,7 @@ extension ModelObjectDetectionTrainDataViewModel {
     }
     
     enum TrainModelError: String, LocalizedError {
+        case trainDataEmpty = "至少需要10張訓練資料"
         case queryError = "請求失敗，請確認網路狀態"
     }
 }
