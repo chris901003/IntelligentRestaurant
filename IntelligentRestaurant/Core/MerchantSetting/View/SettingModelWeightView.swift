@@ -22,7 +22,7 @@ struct SettingModelWeightView: View {
             Color.theme.loginBackground
             
             VStack {
-                MerchantTopNavigationBarView(title: "權重設定", titleImage: "gear")
+                MerchantTopNavigationBarView(title: "設定第二段權重", titleImage: "desktopcomputer")
                     .padding(.bottom, 36)
                 selectFoodType
                     .padding(.bottom, 32)
