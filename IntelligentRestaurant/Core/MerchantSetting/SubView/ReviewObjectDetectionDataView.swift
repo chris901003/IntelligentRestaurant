@@ -96,6 +96,15 @@ struct ReviewObjectDetectionDataView: View {
                         .frame(width: 300, height: 300)
                     }
                 }
+                if vm.nextPage <= vm.totalPage {
+                    ProgressView()
+                        .onAppear {
+                            Task {
+                                await vm.fetchTainImagesForm(page:vm.nextPage)
+                                vm.nextPage += 1
+                            }
+                        }
+                }
             }
         }
         .padding(.horizontal)

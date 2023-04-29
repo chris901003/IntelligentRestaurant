@@ -12,6 +12,7 @@ class ReviewObjectDetectionDataViewModel: ObservableObject {
     // Published Variable
     @Published var uploadTrainData: [ReviewObjectDetectionDataModel] = []
     @Published var totalPage: Int = 0
+    @Published var nextPage: Int = 1
     
     @Published var isProcessing: Bool = false
     @Published var isProcessError: Bool = false
@@ -19,7 +20,6 @@ class ReviewObjectDetectionDataViewModel: ObservableObject {
     // Public Variable
     var loadingMessage: String = ""
     var errorMessage: String = ""
-    var nextPage: Int = 1
     
     // Private
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
@@ -101,11 +101,15 @@ class ReviewObjectDetectionDataViewModel: ObservableObject {
         await MainActor.run {
             totalPage = Int(ceil(Double(totalTrainImage) / Double(imagePerPage)))
         }
-        if totalPage >= 1 {
-            nextPage = 1
-            await fetchTainImagesForm(page: nextPage)
-            nextPage += 1
-        }
+//        if totalPage >= 1 {
+//            await MainActor.run {
+//                nextPage = 1
+//            }
+//            await fetchTainImagesForm(page: nextPage)
+//            await MainActor.run {
+//                nextPage += 1
+//            }
+//        }
         
         await MainActor.run {
             isProcessing = false
