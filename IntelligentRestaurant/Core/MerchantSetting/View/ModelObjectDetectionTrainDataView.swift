@@ -47,6 +47,10 @@ struct ModelObjectDetectionTrainDataView: View {
                 confirmTrainModel
             }
             
+            if vm.isShowTrainAlert {
+                AlertTrainView(isShowTrainAlert: $vm.isShowTrainAlert, alertInfo: vm.trainingInfo)
+            }
+            
             if vm.isProcessing {
                 LoadingView(waitingInfo: vm.loadingMessage, isProgressView: true)
             }
@@ -94,9 +98,16 @@ struct ModelObjectDetectionTrainDataView: View {
                 ReviewObjectDetectionDataView()
                     .edgesIgnoringSafeArea(.top)
             } label: {
-                Text("查看已上傳資料")
-                    .withTopBarButtonModifier(color: Color.orange)
+                Text("已上傳")
+                    .withTopBarButtonModifier(color: Color(hex: "#9B7E6E"))
             }
+            Text("暫停訓練")
+                .withTopBarButtonModifier(color: vm.trainingInfo.trainType == .unknow ? Color.orange.opacity(0.5) : Color.orange)
+                .onTapGesture {
+                    if vm.trainingInfo.trainType != .unknow {
+                        vm.isShowTrainAlert.toggle()
+                    }
+                }
             Text("開始訓練")
                 .withTopBarButtonModifier(color: Color.pink)
                 .onTapGesture {

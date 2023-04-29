@@ -29,6 +29,9 @@
 		052F56AA29F81B8000CEF54E /* ReviewObjectDetectionDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */; };
 		052F56AC29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56AB29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift */; };
 		052F56AF29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56AE29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift */; };
+		052F56B329FCCC2900CEF54E /* TrainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56B229FCCC2900CEF54E /* TrainModel.swift */; };
+		052F56B529FCEB3A00CEF54E /* AlertTrainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56B429FCEB3A00CEF54E /* AlertTrainView.swift */; };
+		052F56B729FCF18A00CEF54E /* AlertTrainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052F56B629FCF18A00CEF54E /* AlertTrainViewModel.swift */; };
 		053D1B2129BF1BF30092DC16 /* TableInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053D1B2029BF1BF30092DC16 /* TableInfoModel.swift */; };
 		053D1B2329BF21F80092DC16 /* SettingModelWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053D1B2229BF21F80092DC16 /* SettingModelWeightView.swift */; };
 		053D1B2529BF4B100092DC16 /* SettingModelWeightViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053D1B2429BF4B100092DC16 /* SettingModelWeightViewModel.swift */; };
@@ -95,6 +98,9 @@
 		052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewObjectDetectionDataView.swift; sourceTree = "<group>"; };
 		052F56AB29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewObjectDetectionDataViewModel.swift; sourceTree = "<group>"; };
 		052F56AE29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewObjectDetectionDataModel.swift; sourceTree = "<group>"; };
+		052F56B229FCCC2900CEF54E /* TrainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainModel.swift; sourceTree = "<group>"; };
+		052F56B429FCEB3A00CEF54E /* AlertTrainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTrainView.swift; sourceTree = "<group>"; };
+		052F56B629FCF18A00CEF54E /* AlertTrainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTrainViewModel.swift; sourceTree = "<group>"; };
 		053D1B2029BF1BF30092DC16 /* TableInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableInfoModel.swift; sourceTree = "<group>"; };
 		053D1B2229BF21F80092DC16 /* SettingModelWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModelWeightView.swift; sourceTree = "<group>"; };
 		053D1B2429BF4B100092DC16 /* SettingModelWeightViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModelWeightViewModel.swift; sourceTree = "<group>"; };
@@ -286,6 +292,7 @@
 			isa = PBXGroup;
 			children = (
 				052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */,
+				052F56B429FCEB3A00CEF54E /* AlertTrainView.swift */,
 			);
 			path = SubView;
 			sourceTree = "<group>";
@@ -294,6 +301,7 @@
 			isa = PBXGroup;
 			children = (
 				052F56AB29F81BB500CEF54E /* ReviewObjectDetectionDataViewModel.swift */,
+				052F56B629FCF18A00CEF54E /* AlertTrainViewModel.swift */,
 			);
 			path = SubViewModel;
 			sourceTree = "<group>";
@@ -321,6 +329,7 @@
 			isa = PBXGroup;
 			children = (
 				05405DF329EA5AD90087D2ED /* MerchantRoomSpaceSubModel.swift */,
+				052F56B229FCCC2900CEF54E /* TrainModel.swift */,
 			);
 			path = HelperModel;
 			sourceTree = "<group>";
@@ -665,6 +674,7 @@
 				0529AF5129BC777700E5096E /* MerchantFoodDetailView.swift in Sources */,
 				052F56AF29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift in Sources */,
 				0529AF4829BC1AA600E5096E /* CoreLocationExtension.swift in Sources */,
+				052F56B329FCCC2900CEF54E /* TrainModel.swift in Sources */,
 				059C66B229BAEF900086660B /* SelectLocationView.swift in Sources */,
 				0529AF3F29BB75E500E5096E /* MerchantHomeView.swift in Sources */,
 				05996BC429B8AA8E00AF9664 /* LoginView.swift in Sources */,
@@ -681,6 +691,7 @@
 				059C66B029BAD7DD0086660B /* CreateMerchantAccountViewModel.swift in Sources */,
 				05996BCC29B8B5A600AF9664 /* LoadingView.swift in Sources */,
 				0529AF4229BC135900E5096E /* MerchantHomeViewModel.swift in Sources */,
+				052F56B529FCEB3A00CEF54E /* AlertTrainView.swift in Sources */,
 				053D1B2829BF4FB50092DC16 /* ModelWeightsModel.swift in Sources */,
 				0597A11A29BE137400E327B2 /* MerchantSettingViewModel.swift in Sources */,
 				0529AF5429BCA70C00E5096E /* MerchantMainViewModel.swift in Sources */,
@@ -696,6 +707,7 @@
 				053EA4FF29C854E000BF19E1 /* DatabaseManager.swift in Sources */,
 				05405DF429EA5AD90087D2ED /* MerchantRoomSpaceSubModel.swift in Sources */,
 				05C62C4729C0AB65007CFE8F /* MerchantRoomSpaceView.swift in Sources */,
+				052F56B729FCF18A00CEF54E /* AlertTrainViewModel.swift in Sources */,
 				052F569329F36C0A00CEF54E /* ModelTrainDataViewModel.swift in Sources */,
 				052F569529F4033200CEF54E /* TrainDataModel.swift in Sources */,
 				05C62C4929C0AF41007CFE8F /* MerchantRoomSpaceViewModel.swift in Sources */,

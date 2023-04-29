@@ -14,6 +14,8 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
     // Published Variable
     @Published var trainImage: UIImage? = nil
     @Published var trainImageCount: String = ""
+    @Published var isShowTrainAlert: Bool = false
+    @Published var trainingInfo: TrainQueryResultModel = .init(status: "", trainType: .unknow, startTime: "")
     
     @Published var isProcessing: Bool = false
     @Published var isProcessError: Bool = false
@@ -32,6 +34,12 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
     private let trainDataDatabaseURL = "http://120.126.151.186/API/eating/model-weight/upload-object-detection-single-image"
     private let trainDataCountURL = "http://120.126.151.186/API/eating/model-weight/object-detection-train-image-count"
     private let trainModelURL = "http://120.126.151.186/API/eating/model-weight/train-object-detection-model"
+    private let checkTrainModelURL = "http://120.126.151.186/API/eating/model-weight/check-is-train"
+    
+    // Init Function
+    init() {
+        Task { await checkIsTrain() }
+    }
     
     // Public Function
     /// 將所選圖像轉成UIImage型態
@@ -137,8 +145,29 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
         let queryModel = AllTableInfoQueryModel(merchantUid: uid)
         let queryResult = await DatabaseManager.shared.uploadData(to: trainModelURL, data: queryModel, timeout: 2)
         switch queryResult {
-        case .success(_):
-            break
+        case .success(let queryResult):
+            switch queryResult.1 {
+            case 201:
+                // 處理獲取結果
+                guard let returnedResult = try? JSONDecoder().decode(TrainQueryResultModel.self, from: queryResult.0) else {
+                    await processErrorHandler(errorStatus: TrainModelError.queryError)
+                    return false
+                }
+                await MainActor.run {
+                    trainingInfo = returnedResult
+                    isProcessing = false
+                    loadingMessage = ""
+                    isShowTrainAlert.toggle()
+                }
+                return false
+            default:
+                guard let serverError = queryResult.0.tranformToString() else {
+                    await processErrorHandler(errorStatus: TrainModelError.queryError)
+                    return false
+                }
+                await processErrorHandler(errorStatus: TrainModelError.queryError, customMessage: serverError)
+                return false
+            }
         case .failure(let errorStatus):
             switch errorStatus {
             case .responseTimeOut:
@@ -164,6 +193,28 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
     }
     
     // Private Function
+    /// 檢查是否有正在訓練模型
+    private func checkIsTrain() async {
+        let queryTrainModel = AllTableInfoQueryModel(merchantUid: uid)
+        let queryTrainModelResult = await DatabaseManager.shared.uploadData(to: checkTrainModelURL, data: queryTrainModel)
+        switch queryTrainModelResult {
+        case .success(let queryResult):
+            switch queryResult.1 {
+            case 200:
+                guard let returnedResult = try? JSONDecoder().decode(TrainQueryResultModel.self, from: queryResult.0) else {
+                    return
+                }
+                await MainActor.run {
+                    trainingInfo = returnedResult
+                }
+            default:
+                return
+            }
+        case .failure(_):
+            return
+        }
+    }
+    
     /// 處理中發生錯誤
     private func processErrorHandler(errorStatus: any RawRepresentable, customMessage: String = "") async {
         await MainActor.run {
