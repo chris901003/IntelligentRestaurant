@@ -71,6 +71,44 @@ class SettingObjectDetectionModelViewModel: ObservableObject {
         return true
     }
     
+    /// 將使用的模型設定成預設
+    public func resetModelUse() async {
+        await MainActor.run {
+            loadingMessage = "更換權重中"
+            isProcess.toggle()
+        }
+        
+        let idx = modelWeightInfo.firstIndex { $0.isChoose }
+        guard let idx = idx else {
+            isProcess.toggle()
+            loadingMessage = ""
+            return
+        }
+        let queryModel = ObjectDetectionWeightModelUse(merchantUid: uid, fileName: "", recommend: "", reset: 1)
+        let resetModelResult = await DatabaseManager.shared.uploadData(to: changeModelWeightUseUrl, data: queryModel)
+        switch resetModelResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                break
+            default:
+                await processErrorHandler(errorStatus: ChangeModelWeightError.internetError)
+                return
+            }
+        case .failure(_):
+            await processErrorHandler(errorStatus: ChangeModelWeightError.internetError)
+            return
+        }
+        await MainActor.run {
+            modelWeightInfo[idx].isChoose = false
+        }
+        
+        await MainActor.run {
+            isProcess.toggle()
+            loadingMessage = ""
+        }
+    }
+    
     /// 更新使用的模型
     public func changeModelUse() async {
         await MainActor.run {

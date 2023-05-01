@@ -54,6 +54,9 @@ struct SettingObjectDetectionModelView: View {
                     MerchantShareInfoManager.instance.settingModeSelect = []
                 }
             Spacer()
+            Text("使用預設權重")
+                .withTopBarButtonModifier(color: Color(hex: "#9B7E6E"))
+                .onTapGesture { Task { await vm.resetModelUse() } }
         }
         .font(.headline)
         .padding(8)
