@@ -33,11 +33,18 @@ struct ObjectDetectionModelWeightModel: Decodable, Identifiable {
     var name: String
     var recommend: String
     var isChoose: Bool
+    
+    init() {
+        self.name = ""
+        self.recommend = ""
+        self.isChoose = false
+    }
 }
 
 extension ObjectDetectionModelWeightModel {
-    enum CodingKeys: CodingKey {
-        case name, recommend, isChoose
+    enum CodingKeys: String, CodingKey {
+        case name, recommend
+        case isChoose = "choose"
     }
     
     init(from decoder: Decoder) throws {
@@ -63,4 +70,20 @@ extension ObjectDetectionModelWeightModel {
             self.isChoose = false
         }
     }
+}
+
+/// 更新目標檢測權重所需資料
+struct ObjectDetectionWeightModelRenameModel: Encodable {
+    let merchantUid: String
+    let oldName: String
+    let newName: String
+    let recommend: String
+}
+
+/// 更換使用權重
+struct ObjectDetectionWeightModelUse: Encodable {
+    let merchantUid: String
+    let fileName: String
+    let recommend: String
+    let reset: Int
 }
