@@ -14,8 +14,12 @@ struct ModelSegmentationTrainView: View {
     
     @StateObject var vm: ModelSegmentationTrainViewModel = ModelSegmentationTrainViewModel()
     @State var selectPhotoItem: PhotosPickerItem? = nil
-    @State var isStartDraw: Bool = false
+    @State var isDrawFood: Bool = false
+    @State var isDrawNotFood: Bool = false
     @State var topLeft: CGPoint = .zero
+    @State var isShowTutorial: Bool = false
+    
+    private let tutorialWidth: CGFloat = UIScreen.main.bounds.size.width / 3 * 2
     
     var body: some View {
         ZStack {
@@ -24,6 +28,7 @@ struct ModelSegmentationTrainView: View {
             VStack {
                 MerchantTopNavigationBarView(title: "第二階段資料", titleImage: "desktopcomputer")
                 topBarButton
+                drawAnnotationButton
                 Spacer()
                 
                 bodySection
@@ -32,9 +37,18 @@ struct ModelSegmentationTrainView: View {
             }
             .padding(.top, 72)
             
-            if (vm.trainImage != nil) && (!vm.drawPath.isEmpty) {
-                DrawPathView(drawPath: vm.drawPath, topLeft: topLeft)
+            if (vm.trainImage != nil) && (!vm.drawFoodPath.isEmpty) {
+                DrawPathView(drawPath: vm.drawFoodPath, topLeft: topLeft)
                     .stroke(Color.pink, lineWidth: 2)
+            }
+            
+            if (vm.trainImage != nil) && (!vm.drawNotFoodPath.isEmpty) {
+                DrawPathView(drawPath: vm.drawNotFoodPath, topLeft: topLeft)
+                    .stroke(Color.blue, lineWidth: 2)
+            }
+            
+            if (vm.trainImage == nil) && isShowTutorial {
+                tutorialSection
             }
             
         }
@@ -52,21 +66,12 @@ struct ModelSegmentationTrainView: View {
                 Text("選擇圖像")
                     .withTopBarButtonModifier(color: Color.blue)
             }
-            if isStartDraw {
-                Text("結束")
-                    .withTopBarButtonModifier(color: Color.pink)
-                    .onTapGesture { isStartDraw.toggle() }
-            } else {
-                Text("開始")
-                    .withTopBarButtonModifier(color: Color.green)
-                    .onTapGesture {
-                        if vm.trainImage != nil {
-                            isStartDraw.toggle()
-                        }
-                    }
-            }
             Button {
-                vm.backStep()
+                if isDrawFood {
+                    let _ = vm.drawFoodPath.popLast()
+                } else if isDrawNotFood {
+                    let _ = vm.drawNotFoodPath.popLast()
+                }
             } label: {
                 Text("上一步")
                     .withTopBarButtonModifier(color: Color.orange)
@@ -76,8 +81,10 @@ struct ModelSegmentationTrainView: View {
         .padding(8)
         .padding(.horizontal, 8)
         .onChange(of: selectPhotoItem) { newValue in
-            vm.drawPath = []
-            isStartDraw = false
+            vm.drawFoodPath = []
+            vm.drawNotFoodPath = []
+            isDrawFood = false
+            isDrawNotFood = false
             guard let newValue = newValue else { return }
             Task { await vm.transferTrainImage(selectItem: newValue) }
         }
@@ -91,8 +98,10 @@ struct ModelSegmentationTrainView: View {
                         .resizable()
                         .scaledToFit()
                         .onTapGesture { location in
-                            if isStartDraw {
-                                vm.drawPath.append(.init(x: location.x, y: location.y))
+                            if isDrawFood {
+                                vm.drawFoodPath.append(.init(x: location.x, y: location.y))
+                            } else if isDrawNotFood {
+                                vm.drawNotFoodPath.append(.init(x: location.x, y: location.y))
                             }
                         }
                         .overlay {
@@ -113,8 +122,94 @@ struct ModelSegmentationTrainView: View {
                 PhotosPicker(selection: $selectPhotoItem, matching: .images) {
                     Text("請選擇一張圖像上傳")
                 }
+                .overlay {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "info.circle")
+                            .font(.headline)
+                            .offset(x: 15, y: -15)
+                            .onTapGesture { withAnimation { isShowTutorial.toggle() } }
+                    }
+                }
             }
         }
+    }
+    
+    private var tutorialSection: some View {
+        ZStack {
+            Color.white.opacity(0.01).onTapGesture { withAnimation { isShowTutorial.toggle() } }
+            VStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("使用方式")
+                            .font(.title3)
+                            .bold()
+                        Text("步驟ㄧ: \n點選「匡出食物」將食物的部分匡選出來，點選「結束」會將自動將終點與其點連接")
+                        Text("步驟二: \n點選「匡出非食物」將碗中非食物的部分匡選出來，點選「結束」會將自動將終點與其點連接")
+                        Text("步驟三: \n點選「上傳」將標注好的資料上傳")
+                        Text("Tip: 若匡選錯誤可以使用「上一步」來返回上一步")
+                            .foregroundColor(Color.secondary)
+                            .font(.subheadline)
+                        Spacer()
+                    }
+                }
+                Text("返回")
+                    .withTopBarButtonModifier(color: .blue)
+                    .onTapGesture { withAnimation { isShowTutorial.toggle() } }
+            }
+            .font(.subheadline)
+            .frame(width: tutorialWidth, height: 250)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundStyle(Color.white.shadow(.drop(radius: 5)))
+            )
+        }
+    }
+    
+    private var drawAnnotationButton: some View {
+        HStack {
+            if isDrawFood {
+                Text("結束")
+                    .withTopBarButtonModifier(color: Color.pink)
+                    .onTapGesture {
+                        isDrawFood.toggle()
+                        if !vm.drawFoodPath.isEmpty { vm.drawFoodPath.append(vm.drawFoodPath[0]) }
+                    }
+            } else {
+                Text("匡出食物")
+                    .withTopBarButtonModifier(color: Color(hex: "#9B7E6E"))
+                    .opacity(isDrawNotFood ? 0.5 : 1)
+                    .onTapGesture {
+                        if isDrawNotFood { return }
+                        if vm.trainImage != nil {
+                            if !vm.drawFoodPath.isEmpty { let _ = vm.drawFoodPath.popLast() }
+                            isDrawFood.toggle()
+                        }
+                    }
+            }
+            
+            if isDrawNotFood {
+                Text("結束")
+                    .withTopBarButtonModifier(color: Color.pink)
+                    .onTapGesture {
+                        isDrawNotFood.toggle()
+                        if !vm.drawNotFoodPath.isEmpty { vm.drawNotFoodPath.append(vm.drawNotFoodPath[0]) }
+                    }
+            } else {
+                Text("匡出非食物")
+                    .withTopBarButtonModifier(color: Color(hex: "#9B7E6E"))
+                    .opacity(isDrawFood ? 0.5 : 1)
+                    .onTapGesture {
+                        if isDrawFood { return }
+                        if vm.trainImage != nil {
+                            if !vm.drawNotFoodPath.isEmpty { let _ = vm.drawNotFoodPath.popLast() }
+                            isDrawNotFood.toggle()
+                        }
+                    }
+            }
+        }
+        .bold()
     }
 }
 
