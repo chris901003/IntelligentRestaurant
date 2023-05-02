@@ -18,6 +18,7 @@ struct ModelSegmentationTrainView: View {
     @State var isDrawNotFood: Bool = false
     @State var topLeft: CGPoint = .zero
     @State var isShowTutorial: Bool = false
+    @State var isShowCategorySelect: Bool = false
     
     private let tutorialWidth: CGFloat = UIScreen.main.bounds.size.width / 3 * 2
     
@@ -49,6 +50,17 @@ struct ModelSegmentationTrainView: View {
             
             if (vm.trainImage == nil) && isShowTutorial {
                 tutorialSection
+            }
+            
+            if isShowCategorySelect {
+                selectCategorySection
+            }
+            
+            if vm.isProcess {
+                LoadingView(waitingInfo: vm.loadingMessage, isProgressView: true)
+            }
+            if vm.isProcessError {
+                ErrorMessageShowView(message: vm.errorMessage)
             }
             
         }
@@ -110,10 +122,14 @@ struct ModelSegmentationTrainView: View {
                                     .onAppear {
                                         topLeft.x = geometry.frame(in: .global).minX
                                         topLeft.y = geometry.frame(in: .global).minY
+                                        vm.showImageWidth = geometry.frame(in: .global).width
+                                        vm.showImageHeight = geometry.frame(in: .global).height
                                     }
                                     .onChange(of: geometry.frame(in: .global)) { geometry in
                                         topLeft.x = geometry.minX
                                         topLeft.y = geometry.minY
+                                        vm.showImageWidth = geometry.width
+                                        vm.showImageHeight = geometry.height
                                     }
                             }
                         }
@@ -208,8 +224,57 @@ struct ModelSegmentationTrainView: View {
                         }
                     }
             }
+            Text("送出")
+                .withTopBarButtonModifier(color: Color.blue)
+                .opacity(vm.trainImage != nil ? 1 : 0.5)
+                .onTapGesture {
+                    if vm.trainImage != nil {
+                        withAnimation { isShowCategorySelect.toggle() }
+                    }
+                }
         }
         .bold()
+    }
+    
+    private var selectCategorySection: some View {
+        ZStack {
+            Color.white.opacity(0.01)
+                .onTapGesture { withAnimation { isShowCategorySelect.toggle() } }
+            VStack {
+                Text("選擇類別")
+                    .font(.headline)
+                ScrollView(showsIndicators: false) {
+                    ForEach(vm.categoryList, id: \.self.1) { categoryInfo in
+                        Text("\(categoryInfo.0)")
+                            .padding(8)
+                            .padding(.horizontal, 8)
+                            .font(.headline)
+                            .frame(width: 125)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color(hex: "#9B7E6E"), lineWidth: 3)
+                            )
+                            .padding(8)
+                            .onTapGesture {
+                                Task {
+                                    vm.selectedCategory = categoryInfo.0
+                                    await vm.uploadTrainData()
+                                }
+                            }
+                    }
+                }
+                Text("取消")
+                    .font(.headline)
+                    .withTopBarButtonModifier(color: Color.blue)
+                    .onTapGesture { withAnimation { isShowCategorySelect.toggle() } }
+            }
+            .frame(width: tutorialWidth - 50, height: 250)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundStyle(Color.white.shadow(.drop(radius: 0.5)))
+            )
+        }
     }
 }
 
