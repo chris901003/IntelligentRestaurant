@@ -9,11 +9,11 @@ import Foundation
 
 struct CustomerAccountModel: Identifiable, Codable {
     let uid: String
-    let name: String
-    let email: String
+    var name: String
+    var email: String
     var password: String
-    let phoneNumber: String
-    let photo: String
+    var phoneNumber: String
+    var photo: String
     var id: String { uid }
 }
 

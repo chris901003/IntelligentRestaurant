@@ -17,7 +17,7 @@ struct MainView: View {
             if vm.isLogin {
                 // 已登陸畫面
                 if vm.userMode == .customer {
-                    Text("Customer Main View")
+                    CustomerMainView()
                 } else if vm.userMode == .merchant {
                     MerchantMainView()
                 }
