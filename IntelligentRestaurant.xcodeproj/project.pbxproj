@@ -42,6 +42,10 @@
 		053EA50129C8748600BF19E1 /* CameraUidSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053EA50029C8748600BF19E1 /* CameraUidSettingViewModel.swift */; };
 		05405DF129EA57810087D2ED /* DataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05405DF029EA57810087D2ED /* DataExtension.swift */; };
 		05405DF429EA5AD90087D2ED /* MerchantRoomSpaceSubModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05405DF329EA5AD90087D2ED /* MerchantRoomSpaceSubModel.swift */; };
+		0562D7042A029FF40074FA3F /* ReviewSegmentationTrainDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7032A029FF40074FA3F /* ReviewSegmentationTrainDataView.swift */; };
+		0562D70A2A04BCCB0074FA3F /* CreateCustomerAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7092A04BCCB0074FA3F /* CreateCustomerAccountView.swift */; };
+		0562D70D2A04BDAE0074FA3F /* CreateCustomerAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D70C2A04BDAE0074FA3F /* CreateCustomerAccountViewModel.swift */; };
+		0562D7102A04BDE80074FA3F /* CustomerInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D70F2A04BDE80074FA3F /* CustomerInfoModel.swift */; };
 		057516F929BCB60800DB78C1 /* MerchantAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057516F829BCB60800DB78C1 /* MerchantAccountViewModel.swift */; };
 		0597A10D29BDA8FE00E327B2 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0597A10C29BDA8FE00E327B2 /* ChangePasswordView.swift */; };
 		0597A10F29BDAC2700E327B2 /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0597A10E29BDAC2700E327B2 /* ChangePasswordViewModel.swift */; };
@@ -113,6 +117,10 @@
 		053EA50029C8748600BF19E1 /* CameraUidSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraUidSettingViewModel.swift; sourceTree = "<group>"; };
 		05405DF029EA57810087D2ED /* DataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtension.swift; sourceTree = "<group>"; };
 		05405DF329EA5AD90087D2ED /* MerchantRoomSpaceSubModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantRoomSpaceSubModel.swift; sourceTree = "<group>"; };
+		0562D7032A029FF40074FA3F /* ReviewSegmentationTrainDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewSegmentationTrainDataView.swift; sourceTree = "<group>"; };
+		0562D7092A04BCCB0074FA3F /* CreateCustomerAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomerAccountView.swift; sourceTree = "<group>"; };
+		0562D70C2A04BDAE0074FA3F /* CreateCustomerAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomerAccountViewModel.swift; sourceTree = "<group>"; };
+		0562D70F2A04BDE80074FA3F /* CustomerInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerInfoModel.swift; sourceTree = "<group>"; };
 		057516F829BCB60800DB78C1 /* MerchantAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantAccountViewModel.swift; sourceTree = "<group>"; };
 		0597A10C29BDA8FE00E327B2 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		0597A10E29BDAC2700E327B2 /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
@@ -297,6 +305,7 @@
 			children = (
 				052F56A929F81B8000CEF54E /* ReviewObjectDetectionDataView.swift */,
 				052F56B429FCEB3A00CEF54E /* AlertTrainView.swift */,
+				0562D7032A029FF40074FA3F /* ReviewSegmentationTrainDataView.swift */,
 			);
 			path = SubView;
 			sourceTree = "<group>";
@@ -336,6 +345,14 @@
 				052F56B229FCCC2900CEF54E /* TrainModel.swift */,
 			);
 			path = HelperModel;
+			sourceTree = "<group>";
+		};
+		0562D70E2A04BDD60074FA3F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0562D70F2A04BDE80074FA3F /* CustomerInfoModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		0597A11429BE131B00E327B2 /* MerchantSetting */ = {
@@ -514,6 +531,7 @@
 		05996BD329B8C74300AF9664 /* CreateAccount */ = {
 			isa = PBXGroup;
 			children = (
+				0562D70E2A04BDD60074FA3F /* Model */,
 				05996BD529B8C76200AF9664 /* ViewModel */,
 				05996BD429B8C75E00AF9664 /* View */,
 			);
@@ -524,6 +542,7 @@
 			isa = PBXGroup;
 			children = (
 				059C66AC29B8C7880086660B /* CreateMerchantAccountView.swift */,
+				0562D7092A04BCCB0074FA3F /* CreateCustomerAccountView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -532,6 +551,7 @@
 			isa = PBXGroup;
 			children = (
 				059C66AF29BAD7DD0086660B /* CreateMerchantAccountViewModel.swift */,
+				0562D70C2A04BDAE0074FA3F /* CreateCustomerAccountViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -665,6 +685,7 @@
 				05C62C5829C35DF8007CFE8F /* CustomerViewInfoViewModel.swift in Sources */,
 				0529AF4F29BC4F3800E5096E /* MerchantTablePreviewView.swift in Sources */,
 				053EA50129C8748600BF19E1 /* CameraUidSettingViewModel.swift in Sources */,
+				0562D70D2A04BDAE0074FA3F /* CreateCustomerAccountViewModel.swift in Sources */,
 				052F568B29EC100900CEF54E /* AllTableWithFoodInfoModel.swift in Sources */,
 				0597A11729BE133400E327B2 /* MerchantSettingView.swift in Sources */,
 				05996BCE29B8B68300AF9664 /* TransparentBackground.swift in Sources */,
@@ -681,6 +702,7 @@
 				052F56AF29F81C4D00CEF54E /* ReviewObjectDetectionDataModel.swift in Sources */,
 				0529AF4829BC1AA600E5096E /* CoreLocationExtension.swift in Sources */,
 				052F56B329FCCC2900CEF54E /* TrainModel.swift in Sources */,
+				0562D7102A04BDE80074FA3F /* CustomerInfoModel.swift in Sources */,
 				052F56B929FD495F00CEF54E /* SettingObjectDetectionModelView.swift in Sources */,
 				059C66B229BAEF900086660B /* SelectLocationView.swift in Sources */,
 				0529AF3F29BB75E500E5096E /* MerchantHomeView.swift in Sources */,
@@ -692,8 +714,10 @@
 				05996BC929B8AB6A00AF9664 /* ColorExtension.swift in Sources */,
 				05996BC629B8AA9500AF9664 /* LoginViewModel.swift in Sources */,
 				0597A11329BDF7E300E327B2 /* AnimatedCheckMarkView.swift in Sources */,
+				0562D7042A029FF40074FA3F /* ReviewSegmentationTrainDataView.swift in Sources */,
 				057516F929BCB60800DB78C1 /* MerchantAccountViewModel.swift in Sources */,
 				05C62C5C29C4B6EA007CFE8F /* CameraUidSettingView.swift in Sources */,
+				0562D70A2A04BCCB0074FA3F /* CreateCustomerAccountView.swift in Sources */,
 				0529AF6029BCB28F00E5096E /* MerchantAccountView.swift in Sources */,
 				059C66B029BAD7DD0086660B /* CreateMerchantAccountViewModel.swift in Sources */,
 				05996BCC29B8B5A600AF9664 /* LoadingView.swift in Sources */,

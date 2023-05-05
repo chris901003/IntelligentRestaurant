@@ -199,7 +199,7 @@ struct LoginView: View {
                 }
                 VStack {
                     NavigationLink {
-                        Text("創建客人帳號")
+                        CreateCustomerAccountView()
                     } label: {
                         Text("我不是店家")
                             .foregroundColor(Color.black)

@@ -86,6 +86,12 @@ struct ModelSegmentationTrainView: View {
                 }
             } label: {
                 Text("上一步")
+                    .withTopBarButtonModifier(color: Color.pink)
+            }
+            NavigationLink {
+                ReviewSegmentationTrainDataView()
+            } label: {
+                Text("已上傳")
                     .withTopBarButtonModifier(color: Color.orange)
             }
         }
