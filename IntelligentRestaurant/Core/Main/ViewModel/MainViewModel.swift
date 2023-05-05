@@ -12,33 +12,45 @@ class MainViewModel: ObservableObject {
     
     // Published Variable
     @Published var isLogin: Bool = MerchantShareInfoManager.instance.isLogin
-    @Published var userMode: MerchantShareInfoManager.UserMode = .merchant
+    @Published var userMode: UserMode = .none
     
     // Private Variable
     private var cancellable = Set<AnyCancellable>()
     
     // Init Function
     init() {
-        subscribeLoginState()
-        subscribeAccountMode()
+        subscribeMerchantLoginState()
+        subscribeCustomerLoginState()
     }
     
     // Subscribe Private Function
-    private func subscribeLoginState() {
+    private func subscribeMerchantLoginState() {
         MerchantShareInfoManager.instance.$isLogin
             .receive(on: DispatchQueue.main)
             .sink { [weak self] returnLoginState in
                 self?.isLogin = returnLoginState
+                if returnLoginState { self?.userMode = .merchant }
+                else { self?.userMode = .none }
             }
             .store(in: &cancellable)
     }
     
-    private func subscribeAccountMode() {
-        MerchantShareInfoManager.instance.$userMode
+    private func subscribeCustomerLoginState() {
+        CustomerShareInfoManager.instance.$isLogin
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] returnedAccountMode in
-                self?.userMode = returnedAccountMode
+            .sink { [weak self] returnLoginState in
+                self?.isLogin = returnLoginState
+                if returnLoginState { self?.userMode = .customer }
+                else { self?.userMode = .none }
             }
             .store(in: &cancellable)
+    }
+}
+
+extension MainViewModel {
+    enum UserMode {
+        case merchant
+        case customer
+        case none
     }
 }

@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct CustomerInfoModel: Identifiable, Codable {
+struct CustomerAccountModel: Identifiable, Codable {
     let uid: String
     let name: String
     let email: String
-    let password: String
+    var password: String
     let phoneNumber: String
     let photo: String
     var id: String { uid }
 }
 
-extension CustomerInfoModel {
+extension CustomerAccountModel {
     init(name: String, email: String, password: String) {
         self.name = name
         self.email = email

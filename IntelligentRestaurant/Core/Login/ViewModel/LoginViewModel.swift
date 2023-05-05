@@ -32,7 +32,8 @@ class LoginViewModel: ObservableObject {
     @Published var isShowSelectCreateAccountMode: Bool = false
     
     // Private Variable
-    private var loginUrl: String = "http://120.126.151.186/API/eating/user/login"
+    private var loginMerchantUrl: String = "http://120.126.151.186/API/eating/user/login"
+    private var loginCustomerUrl: String = "http://120.126.151.186/API/eating/user/login/customer"
     
     // Init Function
     init() {
@@ -82,34 +83,22 @@ class LoginViewModel: ObservableObject {
             return
         }
         
+        var loginType = 0
         // 處理登錄相關資料
-        let merchantAccount = MerchantAccountModel(name: "", phoneNumber: "", email: account, photo: Data(), password: password, location: CLLocationCoordinate2D(), intro: "")
-        
-        let loginResult = await DatabaseManager.shared.uploadData(to: loginUrl, data: merchantAccount)
-        switch loginResult {
-        case .success(let returnedInfo):
-            switch returnedInfo.1 {
-            case 200:
-                guard let returnedAccountInfo = try? JSONDecoder().decode(MerchantAccountModel.self, from: returnedInfo.0) else {
-                    await loginAccountErrorHandler(errorStatus: .accountInfoTransferError)
-                    return
-                }
-                await MainActor.run {
-                    MerchantShareInfoManager.instance.merchantAccount = returnedAccountInfo
-                    MerchantShareInfoManager.instance.merchantAccount.password = password
-                }
-            case 400:
-                await loginAccountErrorHandler(errorStatus: .statusCode400)
-                return
-            case 403:
-                await loginAccountErrorHandler(errorStatus: .statusCode403)
-                return
-            default:
-                await loginAccountErrorHandler(errorStatus: .statusCodeUndefine)
-                return
+        if let loginMerchantResult = await loginWithMerchantAccount() {
+            loginType = 1
+            await MainActor.run {
+                MerchantShareInfoManager.instance.merchantAccount = loginMerchantResult
+                MerchantShareInfoManager.instance.merchantAccount.password = password
             }
-        case .failure(let errorStatus):
-            await loginAccountErrorHandler(errorStatus: .somethingError, customErrorMessage: errorStatus.rawValue)
+        } else if let loginCustomerResult = await loginWithCustomerAccount() {
+            loginType = 2
+            await MainActor.run {
+                CustomerShareInfoManager.instance.customerAccount = loginCustomerResult
+                CustomerShareInfoManager.instance.customerAccount.password = password
+            }
+        } else {
+            await loginAccountErrorHandler(errorStatus: .statusCode403)
             return
         }
         
@@ -122,13 +111,58 @@ class LoginViewModel: ObservableObject {
             let _ = KeyChainManager.createNewKey(name: account, key: password)
         }
         
+        let currentLoginType = loginType
         await MainActor.run {
             isProcessing.toggle()
-            MerchantShareInfoManager.instance.isLogin = true
+            if currentLoginType == 1 {
+                MerchantShareInfoManager.instance.isLogin = true
+            } else if currentLoginType == 2{
+                CustomerShareInfoManager.instance.isLogin = true
+            }
         }
     }
     
     // Private Function
+    /// 登入商家帳號，成功登入回傳商家資訊，否則回傳nil
+    private func loginWithMerchantAccount() async -> MerchantAccountModel? {
+        let merchantAccount = MerchantAccountModel(name: "", phoneNumber: "", email: account, photo: Data(), password: password, location: CLLocationCoordinate2D(), intro: "")
+        let loginMerchantResult = await DatabaseManager.shared.uploadData(to: loginMerchantUrl, data: merchantAccount)
+        switch loginMerchantResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                guard let merchantAccountInfo = try? JSONDecoder().decode(MerchantAccountModel.self, from: returnedResult.0) else {
+                    return nil
+                }
+                return merchantAccountInfo
+            default:
+                return nil
+            }
+        case .failure(_):
+            return nil
+        }
+    }
+    
+    /// 登入使用者帳號
+    private func loginWithCustomerAccount() async -> CustomerAccountModel? {
+        let customerAccount = CustomerAccountModel(name: "", email: account, password: password)
+        let loginCustomerResult = await DatabaseManager.shared.uploadData(to: loginCustomerUrl, data: customerAccount)
+        switch loginCustomerResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                guard let customerAccount = try? JSONDecoder().decode(CustomerAccountModel.self, from: returnedResult.0) else {
+                    return nil
+                }
+                return customerAccount
+            default:
+                return nil
+            }
+        case .failure(_):
+            return nil
+        }
+    }
+    
     /// 獲取裝置可使用的生物識別方式
     private func getBiometryType() {
         canEvaluatePolicy = bioContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)

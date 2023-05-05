@@ -38,7 +38,7 @@ class CreateCustomerAccountViewModel: ObservableObject {
             isProcess.toggle()
         }
         
-        let customerInfo = CustomerInfoModel(name: accountInform[0], email: accountInform[1], password: accountInform[2])
+        let customerInfo = CustomerAccountModel(name: accountInform[0], email: accountInform[1], password: accountInform[2])
         let uploadResult = await DatabaseManager.shared.uploadData(to: createCustomerURL, data: customerInfo)
         switch uploadResult {
         case .success(let returnedResult):
