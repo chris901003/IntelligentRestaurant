@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CustomerMerchantInfoModel: Codable {
+struct CustomerMerchantInfoModel: Identifiable, Codable {
     var customerUid: String
     var merchantUid: String
     var uid: String
@@ -15,7 +15,7 @@ struct CustomerMerchantInfoModel: Codable {
     var phoneNumber: String
     var location: String
     var intro: String
-    var photo: String
+    var photo: Data
     var favorite: Bool
     var id: String { uid }
 }
@@ -28,7 +28,7 @@ extension CustomerMerchantInfoModel {
         self.uid = UUID().uuidString
         self.phoneNumber = ""
         self.location = ""
-        self.photo = ""
+        self.photo = Data()
         self.intro = ""
         self.favorite = false
     }
@@ -80,9 +80,9 @@ extension CustomerMerchantInfoModel {
             self.intro = ""
         }
         if let photo = try? container.decode(String.self, forKey: .photo) {
-            self.photo = photo
+            self.photo =  Data(base64Encoded: photo)!
         } else {
-            self.photo = ""
+            self.photo = Data()
         }
         if let favorite = try? container.decode(Bool.self, forKey: .favorite) {
             self.favorite = favorite

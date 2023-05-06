@@ -17,6 +17,7 @@ class CustomerShareInfoManager: ObservableObject {
     @Published var isLogin: Bool = false
     
     @Published var homeTable: CustomerTableInfoModel = .init(merchantUid: "")
+    @Published var nowHomeMerchantUid: String = ""
     
     func clearAll() {
         customerAccount = CustomerAccountModel(name: "", email: "", password: "")

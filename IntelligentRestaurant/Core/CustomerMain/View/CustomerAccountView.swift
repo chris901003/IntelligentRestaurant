@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CustomerAccountView: View {
-    @StateObject var vm : CustomerAccountViewModel = CustomerAccountViewModel()
     
+    @StateObject var vm : CustomerAccountViewModel = CustomerAccountViewModel()
     @State var isShowUpdateAccount: Bool = false
     
     // 帳號頁面上的密碼

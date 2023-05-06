@@ -15,62 +15,95 @@ class SearchViewModel: ObservableObject {
     @Published var showedMerchant = CustomerMerchantInfoModel(customerUid: "", merchantUid: "",name: "")
     @Published var myFavMerchants: [CustomerMerchantInfoModel] = []
     
+    @Published var isProcess: Bool = false
+    @Published var isProcessError: Bool = false
+    
+    // Public Variable
+    var loadingMessage: String = ""
+    var errorMessage: String = ""
+    
     // Private variable
     private var searchMerchantURL = "http://120.126.151.186/API/eating/user/customer/keyName"
-    private var getMerchantURL = "http://120.126.151.186/API/eating/user/customer/getDetails"
+    private var getMerchantDetailURL = "http://120.126.151.186/API/eating/user/customer/getDetails"
     private var getMyFavListURL = "http://120.126.151.186/API/eating/user/customer/favorite"
-    private var putIntoMyFavListURL = "http://120.126.151.186/API/eating/user/customer/favorite"
-    private var deleteMyFavItemURL = "http://120.126.151.186/API/eating/user/customer/favorite"
+    private var addFavoriateMerchant = "http://120.126.151.186/API/eating/user/customer/favorite"
+    private var deleteFavoriateMerchant = "http://120.126.151.186/API/eating/user/customer/favorite"
 //    private var getTableInfoURL = "http://120.126.151.186/API/eating/food/customer"
+    private let uid: String = CustomerShareInfoManager.instance.customerAccount.uid
     
     // Pubilc function
-    func searchMerchantName() {
-        let merchantInfo = CustomerMerchantInfoModel(customerUid: CustomerShareInfoManager.instance.customerAccount.id, merchantUid: "", name: merchantName)
-        searchedMerchant = []
+    /// 搜尋店家
+    func searchMerchantName() async {
+        await MainActor.run {
+            loadingMessage = "搜尋中"
+            isProcess.toggle()
+        }
         
-        Task {
-            let searchResult = await DatabaseManager.shared.uploadData(to: searchMerchantURL, data: merchantInfo, httpMethod: "POST")
-            
-            switch searchResult {
-            case .success(let returnedResult):
-                let returnedData = returnedResult.0
-                guard let merchantInfo = try? JSONDecoder().decode([CustomerMerchantInfoModel].self, from: returnedData) else {
+        let queryModel = CustomerSearchMerchantModel(name: merchantName, customerUid: uid)
+        let searchResult = await DatabaseManager.shared.uploadData(to: searchMerchantURL, data: queryModel)
+        switch searchResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                guard let merchantInfo = try? JSONDecoder().decode([CustomerMerchantInfoModel].self, from: returnedResult.0) else {
+                    await processErrorHandler(errorStatus: SearchMerchantError.dataTransformError)
                     return
                 }
                 await MainActor.run {
                     searchedMerchant = merchantInfo
                 }
-                print("success")
-                print(merchantInfo)
-                
-            case .failure(let errorStatus):
-                print(errorStatus.rawValue)
-                print("failure")
+            default:
+                break
             }
+        case .failure(_):
+            await processErrorHandler(errorStatus: SearchMerchantError.internetError)
+            return
+        }
+        
+        await MainActor.run {
+            isProcess = false
+            loadingMessage = ""
         }
     }
     
-    func getMerchantInfo(customerUid: String, merchantUid: String) {
-        let merchantInfo = CustomerMerchantInfoModel(customerUid: customerUid, merchantUid: merchantUid, name: "")
-        Task {
-            let searchResult = await DatabaseManager.shared.uploadData(to: getMerchantURL, data: merchantInfo, httpMethod: "POST")
-            
-            switch searchResult {
-            case .success(let returnedResult):
-                let returnedData = returnedResult.0
-                guard let merchantInfo = try? JSONDecoder().decode(CustomerMerchantInfoModel.self, from: returnedData) else {
+    /// 獲取商家詳細資訊
+    func getMerchantInfo(merchantUid: String) async {
+        await MainActor.run {
+            loadingMessage = "讀取店家資訊中"
+            isProcess.toggle()
+        }
+
+        let queryModel = CustomerFetchMerchantDetailModel(customerUid: uid, merchantUid: merchantUid)
+        let searchResult = await DatabaseManager.shared.uploadData(to: getMerchantDetailURL, data: queryModel)
+        switch searchResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                guard let merchantDetail = try? JSONDecoder().decode(CustomerMerchantInfoModel.self, from: returnedResult.0) else {
+                    await processErrorHandler(errorStatus: SearchMerchantError.dataTransformError)
+                    return
+                }
+                let idx = searchedMerchant.firstIndex { $0.uid == merchantDetail.uid }
+                guard let idx = idx else {
+                    await processErrorHandler(errorStatus: SearchMerchantError.neverFail)
                     return
                 }
                 await MainActor.run {
-                    showedMerchant = merchantInfo
+                    searchedMerchant[idx] = merchantDetail
+                    showedMerchant = merchantDetail
                 }
-                print("success")
-                print(showedMerchant)
-                
-            case .failure(let errorStatus):
-                print(errorStatus.rawValue)
+            default:
+                await processErrorHandler(errorStatus: SearchMerchantError.neverFail)
+                return
             }
-            
+        case .failure(_):
+            await processErrorHandler(errorStatus: SearchMerchantError.internetError)
+            return
+        }
+        
+        await MainActor.run {
+            isProcess.toggle()
+            loadingMessage = ""
         }
     }
     
@@ -98,72 +131,109 @@ class SearchViewModel: ObservableObject {
         
     }
     
-    func putIntoMyFavList(customerUid: String, merchantUid: String) {
-        let merchantInfo = CustomerMerchantInfoModel(customerUid: customerUid, merchantUid: merchantUid, name: "")
-        print(customerUid)
-        print(merchantUid)
-        Task {
-            let savedResult = await DatabaseManager.shared.uploadData(to: putIntoMyFavListURL, data: merchantInfo, httpMethod: "PUT")
-            
-            switch savedResult {
-            case .success(let returnedResult):
-                switch returnedResult.1 {
-                case 200:
-                    print("✅ Create Success")
-                    break
-                default:
-                    print(returnedResult.1)
+    /// 添加到喜好店家中
+    func putIntoMyFavList(merchantUid: String) async {
+        await MainActor.run {
+            loadingMessage = "添加中"
+            isProcess.toggle()
+        }
+        
+        let queryModel = CustomerFetchMerchantDetailModel(customerUid: uid, merchantUid: merchantUid)
+        let saveResult = await DatabaseManager.shared.uploadData(to: addFavoriateMerchant, data: queryModel, httpMethod: "PUT")
+        switch saveResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                let idx = searchedMerchant.firstIndex { $0.uid == merchantUid }
+                guard let idx = idx else {
+                    await processErrorHandler(errorStatus: UpdateFavoriateMerchantError.neverFail)
+                    return
                 }
-                
-            case .failure(let errorStatus):
-                print("Create Error: \(errorStatus.rawValue)")
+                await MainActor.run {
+                    searchedMerchant[idx].favorite = true
+                    if searchedMerchant[idx].uid == showedMerchant.uid {
+                        showedMerchant.favorite = true
+                    }
+                }
+            default:
+                await processErrorHandler(errorStatus: UpdateFavoriateMerchantError.neverFail)
+                return
             }
-            
+        case .failure(_):
+            await processErrorHandler(errorStatus: UpdateFavoriateMerchantError.internetError)
+            return
+        }
+        
+        await MainActor.run {
+            loadingMessage = ""
+            isProcess = false
         }
     }
     
-    func deleteMyFavItem(customerUid: String, merchantUid: String) {
-        let merchantInfo = CustomerMerchantInfoModel(customerUid: customerUid, merchantUid: merchantUid, name: "")
-        Task {
-            let savedResult = await DatabaseManager.shared.uploadData(to: deleteMyFavItemURL, data: merchantInfo, httpMethod: "DELETE")
-            
-            switch savedResult {
-            case .success(let returnedResult):
-                switch returnedResult.1 {
-                case 200:
-                    print("✅ Delete Success")
-                    break
-                default:
-                    print(returnedResult.1)
+    /// 移除喜好店家
+    func deleteMyFavItem(merchantUid: String) async {
+        await MainActor.run {
+            loadingMessage = "刪除中"
+            isProcess.toggle()
+        }
+        
+        let queryModel = CustomerFetchMerchantDetailModel(customerUid: uid, merchantUid: merchantUid)
+        let deleteResult = await DatabaseManager.shared.uploadData(to: deleteFavoriateMerchant, data: queryModel, httpMethod: "Delete")
+        switch deleteResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                let idx = searchedMerchant.firstIndex { $0.uid == merchantUid }
+                guard let idx = idx else {
+                    await processErrorHandler(errorStatus: UpdateFavoriateMerchantError.neverFail)
+                    return
                 }
-                
-            case .failure(let errorStatus):
-                print("Create Error: \(errorStatus.rawValue)")
+                await MainActor.run {
+                    searchedMerchant[idx].favorite = false
+                    if searchedMerchant[idx].uid == showedMerchant.uid {
+                        showedMerchant.favorite = false
+                    }
+                }
+            default:
+                await processErrorHandler(errorStatus: UpdateFavoriateMerchantError.internetError)
+                return
             }
-            
+        case .failure(_):
+            await processErrorHandler(errorStatus: UpdateFavoriateMerchantError.internetError)
+            return
+        }
+        
+        await MainActor.run {
+            isProcess = false
+            loadingMessage = ""
         }
     }
     
-//    func getTableInfo(merchantUid: String) {
-//        let tableInfo = TableInfoModel(merchantUid: merchantUid)
-//        print("getTableInfo")
-//        Task {
-//            let getResult = await DatabaseManager.shared.uploadData(to: getTableInfoURL, data: tableInfo, httpMethod: "POST")
-//            switch getResult {
-//            case .success(let returnedResult):
-//                let returnedData = returnedResult.0
-//                guard let tableInfo = try? JSONDecoder().decode(TableInfoModel.self, from: returnedData) else {
-//                    return
-//                }
-//                await MainActor.run {
-//                    ShareInfoManager.shared.homeTable = tableInfo
-//                }
-//                print("success!")
-//                print(tableInfo)
-//            case .failure(let errorStatus):
-//                print("fail")
-//                print(errorStatus.rawValue)
-//            }
-//        }
-//    }
+    // Private Function
+    /// 處理中發生錯誤
+    private func processErrorHandler(errorStatus: any RawRepresentable, customMessage: String = "") async {
+        await MainActor.run {
+            errorMessage = customMessage.isEmpty ? errorStatus.rawValue as! String : customMessage
+            isProcessError.toggle()
+        }
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await MainActor.run {
+            isProcessError.toggle()
+            isProcess = false
+            errorMessage = ""
+            loadingMessage = ""
+        }
+    }
+}
+
+extension SearchViewModel {
+    enum SearchMerchantError: String, LocalizedError {
+        case internetError = "網路發生錯誤，請確認網路狀態"
+        case dataTransformError = "資料轉換錯誤"
+        case neverFail = "不可能發生此錯誤"
+    }
+    enum UpdateFavoriateMerchantError: String, LocalizedError {
+        case internetError = "網路發生錯誤，請確認網路狀態"
+        case neverFail = "不可能發生此錯誤"
+    }
 }

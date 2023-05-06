@@ -15,7 +15,7 @@ struct CustomerMainView: View {
     @State var sidebarPressed: Bool = false
     @State var title: String = "主頁"
     @State var icon: String = "house.fill"
-    @State var selectedTab = "account"
+    @State var selectedTab = "search"
     
     @State var selectedTabItem: [String] = ["main", "account", "search"]
     
@@ -62,7 +62,7 @@ struct CustomerMainView: View {
                             
                             // 中下方的tabview
 //                            SearchView(vm: SearchViewModel(), homevm: HomeViewModel())
-                            Text("Search View")
+                            CustomerSearchView()
                                 .tabItem {
                                     Image(systemName: "magnifyingglass")
                                     Text("店家查詢")
@@ -149,8 +149,8 @@ struct CustomerMainView: View {
                                             
                                             
                                             Button {
-                                                vm.deleteMyFavItem(customerUid: vm.myFavMerchants[index].customerUid, merchantUid: vm.myFavMerchants[index].uid)
-                                                vm.myFavMerchants[index].favorite.toggle()
+//                                                vm.deleteMyFavItem(customerUid: vm.myFavMerchants[index].customerUid, merchantUid: vm.myFavMerchants[index].uid)
+//                                                vm.myFavMerchants[index].favorite.toggle()
                                             } label: {
                                                 Image(systemName: vm.myFavMerchants[index].favorite ? "star.fill" : "star")
                                             }
