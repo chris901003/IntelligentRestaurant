@@ -10,10 +10,9 @@ import SwiftUI
 struct CustomerSearchView: View {
     
     @StateObject var vm : SearchViewModel = SearchViewModel()
-    @StateObject var homevm : HomeViewModel = HomeViewModel()
+    @StateObject var customerShareInfoManager = CustomerShareInfoManager.instance
     
     @State var searchButton: Bool = false
-    @State var selectedMerchant: Bool = false
     @State var selectMerchantNot200: Bool = false
     
     var body: some View {
@@ -32,30 +31,8 @@ struct CustomerSearchView: View {
                             Spacer()
                         }
                     }
-                    // 如果選擇的店家無食物資訊
-                    if homevm.status {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 20)
-                                .foregroundColor(Color(hex: "ECD2D2"))
-                            VStack{
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        homevm.status.toggle()
-                                        selectedMerchant = false
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                            .foregroundColor(.black)
-                                            .frame(width: 50, height: 50)
-                                    }
-                                }
-                                Text("此商家尚未準備好")
-                            }
-                        }
-                        .frame(width: 200, height: 100)
-                    }
                 }
-                .padding([.leading, .trailing],35)
+                .padding([.leading, .trailing], 35)
             }
             
             if vm.isProcess {
@@ -78,7 +55,6 @@ struct CustomerSearchView: View {
             Button {
                 Task { await vm.searchMerchantName() }
                 searchButton = true
-                selectedMerchant = false
             } label: {
                 Image(systemName: "arrow.turn.down.left")
             }
@@ -193,37 +169,28 @@ struct CustomerSearchView: View {
             ZStack {
                 Button {
                     // 紀錄被選擇的店家 食物資訊
-                    dataShowInHomeView()
-                    CustomerShareInfoManager.instance.nowHomeMerchantUid = vm.showedMerchant.uid
-                    selectedMerchant.toggle()
-                    if selectedMerchant {
-                        homevm.getTableInfo(merchantUid: vm.showedMerchant.uid)
-                    }
-                    else {
-                        // 表示主頁不會顯示畫面
-                        CustomerShareInfoManager.instance.nowHomeMerchantUid = "-1"
-                    }
+                    customerShareInfoManager.selectedMerchant = vm.showedMerchant
+                    customerShareInfoManager.selectedMerchantUid = vm.showedMerchant.uid
                 } label: {
-                    Text(selectedMerchant ? "已選擇店家" : "選擇顯示此店家")
+                    Text(customerShareInfoManager.selectedMerchantUid == vm.showedMerchant.uid ? "已選擇店家" : "選擇顯示此店家")
                         .font(.body)
                         .fontWeight(.bold)
-                        .foregroundColor(Color(hex: "715428"))
+                        .foregroundColor(Color(hex: "715428").opacity(vm.showedMerchant.uid == "" ? 0.5 : 1))
                         .padding()
                         .frame(height: 40)
                         .background(
                             RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color(hex: "715428"), lineWidth: 2)
+                                .stroke(Color(hex: "715428").opacity(vm.showedMerchant.uid == "" ? 0.5 : 1), lineWidth: 2)
                         )
                 }
+                .disabled(vm.showedMerchant.uid == "")
                 .padding(5)
                 
                 HStack {
                     Spacer()
-                    
-                    Image(systemName: selectedMerchant ? "checkmark.square" : "square")
+                    Image(systemName: customerShareInfoManager.selectedMerchantUid == vm.showedMerchant.uid ? "checkmark.square" : "square")
                         .foregroundColor(Color(hex: "715428"))
                 }
-                
             }
         }
     }
@@ -316,17 +283,5 @@ struct CustomerSearchView: View {
             RoundedRectangle(cornerRadius: 10)
                 .foregroundColor(Color.white)
         )
-    }
-    
-    func clearSearchButton() {
-        searchButton = false
-    }
-    
-    func clearMerchantData() {
-        vm.merchantName = ""
-    }
-    
-    func dataShowInHomeView() {
-//        CustomerShareInfoManager.instance.merchant = vm.showedMerchant
     }
 }

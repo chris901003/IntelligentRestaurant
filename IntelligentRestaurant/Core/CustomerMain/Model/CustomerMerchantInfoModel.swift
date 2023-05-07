@@ -25,7 +25,7 @@ extension CustomerMerchantInfoModel {
         self.customerUid = customerUid
         self.merchantUid = merchantUid
         self.name = name
-        self.uid = UUID().uuidString
+        self.uid = ""
         self.phoneNumber = ""
         self.location = ""
         self.photo = Data()

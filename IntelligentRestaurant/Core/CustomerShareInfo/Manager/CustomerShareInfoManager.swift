@@ -16,6 +16,8 @@ class CustomerShareInfoManager: ObservableObject {
     @Published var customerAccount = CustomerAccountModel(name: "", email: "", password: "")
     @Published var isLogin: Bool = false
     
+    @Published var selectedMerchant: CustomerMerchantInfoModel = .init(customerUid: "", merchantUid: "", name: "")
+    @Published var selectedMerchantUid: String = ""
     @Published var homeTable: CustomerTableInfoModel = .init(merchantUid: "")
     @Published var nowHomeMerchantUid: String = ""
     
