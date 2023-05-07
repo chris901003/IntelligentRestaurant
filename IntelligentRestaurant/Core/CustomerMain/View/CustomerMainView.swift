@@ -9,13 +9,13 @@ import SwiftUI
 
 
 struct CustomerMainView: View {
-    @StateObject var vm = SearchViewModel()
-    @StateObject var homevm = HomeViewModel()
+    @StateObject var vm = CustomerSearchViewModel()
+    @StateObject var homevm = CustomerHomeViewModel()
     
     @State var sidebarPressed: Bool = false
     @State var title: String = "主頁"
     @State var icon: String = "house.fill"
-    @State var selectedTab = "search"
+    @State var selectedTab = "main"
     
     @State var selectedTabItem: [String] = ["main", "account", "search"]
     
@@ -41,8 +41,7 @@ struct CustomerMainView: View {
                     ZStack {
                         TabView(selection: $selectedTab)  {
                             // 左下方的主頁tabview
-//                            HomeView(vm: HomeViewModel())
-                            Text("Home View")
+                            CustomerHomeView()
                                 .tabItem {
                                     Image(systemName: "house.fill")
                                     Text("主頁")
@@ -61,7 +60,6 @@ struct CustomerMainView: View {
                                 .tag("main")
                             
                             // 中下方的tabview
-//                            SearchView(vm: SearchViewModel(), homevm: HomeViewModel())
                             CustomerSearchView()
                                 .tabItem {
                                     Image(systemName: "magnifyingglass")

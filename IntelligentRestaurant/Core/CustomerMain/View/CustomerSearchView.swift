@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CustomerSearchView: View {
     
-    @StateObject var vm : SearchViewModel = SearchViewModel()
+    @StateObject var vm : CustomerSearchViewModel = CustomerSearchViewModel()
     @StateObject var customerShareInfoManager = CustomerShareInfoManager.instance
     
     @State var searchButton: Bool = false

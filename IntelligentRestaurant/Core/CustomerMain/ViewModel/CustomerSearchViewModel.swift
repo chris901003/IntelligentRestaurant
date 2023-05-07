@@ -1,5 +1,5 @@
 //
-//  SearchViewModel.swift
+//  CustomerSearchViewModel.swift
 //  IntelligentRestaurant
 //
 //  Created by 黃弘諺 on 2023/5/5.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SearchViewModel: ObservableObject {
+class CustomerSearchViewModel: ObservableObject {
     
     // Published variable
     @Published var merchantName: String = ""
@@ -28,7 +28,6 @@ class SearchViewModel: ObservableObject {
     private var getMyFavListURL = "http://120.126.151.186/API/eating/user/customer/favorite"
     private var addFavoriateMerchant = "http://120.126.151.186/API/eating/user/customer/favorite"
     private var deleteFavoriateMerchant = "http://120.126.151.186/API/eating/user/customer/favorite"
-//    private var getTableInfoURL = "http://120.126.151.186/API/eating/food/customer"
     private let uid: String = CustomerShareInfoManager.instance.customerAccount.uid
     
     // Pubilc function
@@ -226,7 +225,7 @@ class SearchViewModel: ObservableObject {
     }
 }
 
-extension SearchViewModel {
+extension CustomerSearchViewModel {
     enum SearchMerchantError: String, LocalizedError {
         case internetError = "網路發生錯誤，請確認網路狀態"
         case dataTransformError = "資料轉換錯誤"
