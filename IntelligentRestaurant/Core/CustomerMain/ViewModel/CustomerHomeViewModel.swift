@@ -177,10 +177,9 @@ class CustomerHomeViewModel: ObservableObject {
         CustomerShareInfoManager.instance.$selectedMerchantUid
             .receive(on: DispatchQueue.main)
             .sink { [weak self] returnedSelectedMerchantUid in
-                DispatchQueue.main.async {
-                    self?.selectedMerchantUid = returnedSelectedMerchantUid
-                    self?.getTableInfoHelper()
-                }
+//                if returnedSelectedMerchantUid == "" { return }
+                self?.selectedMerchantUid = returnedSelectedMerchantUid
+                self?.getTableInfoHelper()
             }
             .store(in: &cancellable)
     }

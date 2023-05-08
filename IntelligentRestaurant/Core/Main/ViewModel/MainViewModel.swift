@@ -20,7 +20,7 @@ class MainViewModel: ObservableObject {
     // Init Function
     init() {
         subscribeMerchantLoginState()
-        subscribeCustomerLoginState()
+//        subscribeCustomerLoginState()
     }
     
     // Subscribe Private Function
@@ -36,6 +36,7 @@ class MainViewModel: ObservableObject {
     }
     
     private func subscribeCustomerLoginState() {
+        // 這裡異常發生問題
         CustomerShareInfoManager.instance.$isLogin
             .receive(on: DispatchQueue.main)
             .sink { [weak self] returnLoginState in

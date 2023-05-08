@@ -58,6 +58,8 @@
 		0562D72B2A0631580074FA3F /* CustomerSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D72A2A0631580074FA3F /* CustomerSearchModel.swift */; };
 		0562D7382A07D1E00074FA3F /* CustomerHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7372A07D1E00074FA3F /* CustomerHomeView.swift */; };
 		0562D73A2A08926D0074FA3F /* CustomerHomeViewSupportModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7392A08926D0074FA3F /* CustomerHomeViewSupportModel.swift */; };
+		0562D73C2A08FAFB0074FA3F /* CustomerFavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D73B2A08FAFB0074FA3F /* CustomerFavoriteView.swift */; };
+		0562D73E2A0900030074FA3F /* CustomerFavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D73D2A0900030074FA3F /* CustomerFavoriteViewModel.swift */; };
 		057516F929BCB60800DB78C1 /* MerchantAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057516F829BCB60800DB78C1 /* MerchantAccountViewModel.swift */; };
 		0597A10D29BDA8FE00E327B2 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0597A10C29BDA8FE00E327B2 /* ChangePasswordView.swift */; };
 		0597A10F29BDAC2700E327B2 /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0597A10E29BDAC2700E327B2 /* ChangePasswordViewModel.swift */; };
@@ -145,6 +147,8 @@
 		0562D72A2A0631580074FA3F /* CustomerSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchModel.swift; sourceTree = "<group>"; };
 		0562D7372A07D1E00074FA3F /* CustomerHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerHomeView.swift; sourceTree = "<group>"; };
 		0562D7392A08926D0074FA3F /* CustomerHomeViewSupportModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerHomeViewSupportModel.swift; sourceTree = "<group>"; };
+		0562D73B2A08FAFB0074FA3F /* CustomerFavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerFavoriteView.swift; sourceTree = "<group>"; };
+		0562D73D2A0900030074FA3F /* CustomerFavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerFavoriteViewModel.swift; sourceTree = "<group>"; };
 		057516F829BCB60800DB78C1 /* MerchantAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantAccountViewModel.swift; sourceTree = "<group>"; };
 		0597A10C29BDA8FE00E327B2 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		0597A10E29BDAC2700E327B2 /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
@@ -413,6 +417,7 @@
 				0562D7232A052C490074FA3F /* CustomerAccountView.swift */,
 				0562D7272A0623D00074FA3F /* CustomerSearchView.swift */,
 				0562D7372A07D1E00074FA3F /* CustomerHomeView.swift */,
+				0562D73B2A08FAFB0074FA3F /* CustomerFavoriteView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -423,6 +428,7 @@
 				0562D71A2A050CC40074FA3F /* CustomerHomeViewModel.swift */,
 				0562D71C2A050D510074FA3F /* CustomerSearchViewModel.swift */,
 				0562D7252A052CB70074FA3F /* CustomerAccountViewModel.swift */,
+				0562D73D2A0900030074FA3F /* CustomerFavoriteViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -815,6 +821,7 @@
 				05996BC629B8AA9500AF9664 /* LoginViewModel.swift in Sources */,
 				0597A11329BDF7E300E327B2 /* AnimatedCheckMarkView.swift in Sources */,
 				0562D7042A029FF40074FA3F /* ReviewSegmentationTrainDataView.swift in Sources */,
+				0562D73E2A0900030074FA3F /* CustomerFavoriteViewModel.swift in Sources */,
 				057516F929BCB60800DB78C1 /* MerchantAccountViewModel.swift in Sources */,
 				05C62C5C29C4B6EA007CFE8F /* CameraUidSettingView.swift in Sources */,
 				0562D70A2A04BCCB0074FA3F /* CreateCustomerAccountView.swift in Sources */,
@@ -833,6 +840,7 @@
 				05DBD42B29BB4AD900405829 /* SelectLocationViewModel.swift in Sources */,
 				052F56A429F6A65E00CEF54E /* ModelSegmentationTrainView.swift in Sources */,
 				05C62C4C29C14A09007CFE8F /* MerchantRoomSpaceItemModel.swift in Sources */,
+				0562D73C2A08FAFB0074FA3F /* CustomerFavoriteView.swift in Sources */,
 				0597A10F29BDAC2700E327B2 /* ChangePasswordViewModel.swift in Sources */,
 				05C62C5A29C49C15007CFE8F /* MerchantCustomerViewInfoModel.swift in Sources */,
 				052F56BB29FD4BCB00CEF54E /* SettingObjectDetectionModelViewModel.swift in Sources */,
