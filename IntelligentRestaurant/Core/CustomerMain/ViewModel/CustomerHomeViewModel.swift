@@ -13,6 +13,9 @@ class CustomerHomeViewModel: ObservableObject {
     // Published Variable
     @Published var status : Bool = false
     
+    @Published var remainTimeCategorySelect: [CustomerShowTableInfoCategoryModel] = []
+    @Published var selectedRemainTimeCategoryIdx: Int = 0
+    
     @Published var tableInfo: CustomerTableInfoModel = .init(merchantUid: "")
     @Published var selectedMerchantUid: String = ""
     @Published var isMerchantNotStart: Bool = false
@@ -31,6 +34,7 @@ class CustomerHomeViewModel: ObservableObject {
     
     // Init Function
     init() {
+        initRemainTimeCategorySelect()
         subscribeMerchantSelect()
     }
     
@@ -72,14 +76,26 @@ class CustomerHomeViewModel: ObservableObject {
         CustomerShareInfoManager.instance.homeTable.remainTime.sorted(by: RemainTime.sortByTime)
     }
     
-    // 計算空桌數量
+    /// 點選剩餘等待時間觸發
+    func selectRemainTimeCategory(selected: CustomerShowTableInfoCategoryModel) {
+        guard !selected.isSelected else { return }
+        let pastIdx = remainTimeCategorySelect.firstIndex { $0.isSelected }
+        guard let pastIdx = pastIdx else { fatalError("不可能發生此錯誤") }
+        remainTimeCategorySelect[pastIdx].isSelected = false
+        let currentIdx = remainTimeCategorySelect.firstIndex { $0.id == selected.id }
+        guard let currentIdx = currentIdx else { fatalError("不可能發生此錯誤") }
+        remainTimeCategorySelect[currentIdx].isSelected = true
+        selectedRemainTimeCategoryIdx = currentIdx
+    }
+    
+    /// 計算空桌數量
     func countEmptyTable() -> Int {
         tableInfo.remainTime.reduce(0) { prefixSum, info in
             prefixSum + (info.remainTime == "0" ? 1 : 0)
         }
     }
     
-    // 顯示空桌的桌號，用字串的方式表示，中間用「，」隔開
+    /// 顯示空桌的桌號，用字串的方式表示，中間用「，」隔開
     func fetchEmptyTableString() -> String {
         var emptyTableName: [String] = []
         emptyTablePressedDownScreen = []
@@ -160,6 +176,18 @@ class CustomerHomeViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellable)
+    }
+}
+
+// MARK: 初始化方面，全為Private Function
+extension CustomerHomeViewModel {
+    /// 初始化剩餘時間選項
+    private func initRemainTimeCategorySelect() {
+        remainTimeCategorySelect.append(contentsOf: [
+            .init(name: "不顯示", isSelected: true),
+            .init(name: "最短剩餘時間", isSelected: false),
+            .init(name: "所有桌子資訊", isSelected: false)
+        ])
     }
 }
 

@@ -14,7 +14,7 @@ struct CustomerTableInfoModel: Codable {
 //    var id: String { merchantUid }
 }
 
-struct RemainTime: Codable {
+struct RemainTime: Codable, Hashable {
     var tableName: String
     var remainTime: String
     

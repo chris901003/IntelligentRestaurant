@@ -57,6 +57,7 @@
 		0562D7282A0623D00074FA3F /* CustomerSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7272A0623D00074FA3F /* CustomerSearchView.swift */; };
 		0562D72B2A0631580074FA3F /* CustomerSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D72A2A0631580074FA3F /* CustomerSearchModel.swift */; };
 		0562D7382A07D1E00074FA3F /* CustomerHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7372A07D1E00074FA3F /* CustomerHomeView.swift */; };
+		0562D73A2A08926D0074FA3F /* CustomerHomeViewSupportModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0562D7392A08926D0074FA3F /* CustomerHomeViewSupportModel.swift */; };
 		057516F929BCB60800DB78C1 /* MerchantAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057516F829BCB60800DB78C1 /* MerchantAccountViewModel.swift */; };
 		0597A10D29BDA8FE00E327B2 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0597A10C29BDA8FE00E327B2 /* ChangePasswordView.swift */; };
 		0597A10F29BDAC2700E327B2 /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0597A10E29BDAC2700E327B2 /* ChangePasswordViewModel.swift */; };
@@ -143,6 +144,7 @@
 		0562D7272A0623D00074FA3F /* CustomerSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchView.swift; sourceTree = "<group>"; };
 		0562D72A2A0631580074FA3F /* CustomerSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchModel.swift; sourceTree = "<group>"; };
 		0562D7372A07D1E00074FA3F /* CustomerHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerHomeView.swift; sourceTree = "<group>"; };
+		0562D7392A08926D0074FA3F /* CustomerHomeViewSupportModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerHomeViewSupportModel.swift; sourceTree = "<group>"; };
 		057516F829BCB60800DB78C1 /* MerchantAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantAccountViewModel.swift; sourceTree = "<group>"; };
 		0597A10C29BDA8FE00E327B2 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		0597A10E29BDAC2700E327B2 /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
@@ -438,6 +440,7 @@
 			isa = PBXGroup;
 			children = (
 				0562D72A2A0631580074FA3F /* CustomerSearchModel.swift */,
+				0562D7392A08926D0074FA3F /* CustomerHomeViewSupportModel.swift */,
 			);
 			path = SubModel;
 			sourceTree = "<group>";
@@ -841,6 +844,7 @@
 				052F56B729FCF18A00CEF54E /* AlertTrainViewModel.swift in Sources */,
 				052F569329F36C0A00CEF54E /* ModelTrainDataViewModel.swift in Sources */,
 				052F569529F4033200CEF54E /* TrainDataModel.swift in Sources */,
+				0562D73A2A08926D0074FA3F /* CustomerHomeViewSupportModel.swift in Sources */,
 				05C62C4929C0AF41007CFE8F /* MerchantRoomSpaceViewModel.swift in Sources */,
 				05C62C5629C35CE4007CFE8F /* CustomerViewInfoView.swift in Sources */,
 				052F569129F36BA800CEF54E /* ModelObjectDetectionTrainDataView.swift in Sources */,
