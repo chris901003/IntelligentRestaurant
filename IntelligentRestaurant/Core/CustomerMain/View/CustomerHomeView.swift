@@ -7,28 +7,12 @@
 
 import SwiftUI
 
-struct Object {
-    let id = UUID()
-    var name : String
-    var selected : Bool
-}
-
 struct CustomerHomeView: View {
     
     @StateObject var vm: CustomerHomeViewModel = CustomerHomeViewModel()
     
     @State var tableInformButton: Bool = false
     @State var emptyTableInformButton: Bool = false
-    @State var emptyString : String = ""
-    
-//    @State var currentWaitingArray = [
-//        Object(name: "不顯示", selected: true),
-//        Object(name: "最短剩餘時間", selected: false),
-//        Object(name: "所有桌子資訊", selected: false)
-//    ]
-    
-//    @State var nowSelectedCheck: Int = 0
-    @State var emptyTableCount: Int = 0
     
     var body: some View {
         ZStack {
@@ -47,18 +31,6 @@ struct CustomerHomeView: View {
                     }
                 }
                 .padding(32)
-                .onAppear {
-                    // 初始化
-//                    currentWaitingArray = [
-//                        Object(name: "不顯示", selected: true),
-//                        Object(name: "最短剩餘時間", selected: false),
-//                        Object(name: "所有桌子資訊", selected: false)
-//                    ]
-//                    nowSelectedCheck = 0
-                    emptyTableCount = 0
-                    // 將"最短剩餘時間"的下拉bar，加入桌子的數量
-                    arrayAppend(startID: 0)
-                }
             }
             
             if vm.isProcess {
@@ -221,78 +193,57 @@ struct CustomerHomeView: View {
     // 等待時間的頁面
     private var waitingTimeScreen: some View {
         ZStack {
-            // drop down bar 第一個按鈕選擇（不顯示）
             if vm.selectedRemainTimeCategoryIdx == 0 {
+                // drop down bar 第一個按鈕選擇（不顯示）
                 // 不顯示
-            }
-            // drop down bar 第二個按鈕選擇（最短剩餘時間）
-            else if vm.selectedRemainTimeCategoryIdx == 1 {
+            } else if vm.selectedRemainTimeCategoryIdx == 1 {
+                // drop down bar 第二個按鈕選擇（最短剩餘時間）
                 // 使用TimeSort，判斷時間最短的
-                TimeSort(tableInfo: vm.tableInfo)
-            }
-            // drop down bar 第三個按鈕選擇（所有桌子資訊）
-            else if vm.selectedRemainTimeCategoryIdx == 2 {
+                ShortestWaitingTableListView(tableInfo: vm.tableInfo)
+            } else if vm.selectedRemainTimeCategoryIdx == 2 {
+                // drop down bar 第三個按鈕選擇（所有桌子資訊）
                 Rectangle()
-                    .frame(height: CGFloat(CustomerShareInfoManager.instance.homeTable.remainTime.count) * 35)
+                    .frame(height: CGFloat(vm.tableInfo.remainTime.count) * 35)
                     .foregroundColor(.black.opacity(0.1))
                 
                 // 顯示剩餘等待時間的screen
                 VStack {
-                    ForEach(CustomerShareInfoManager.instance.homeTable.remainTime.indices, id: \.self) { tableID in
+                    ForEach(vm.tableInfo.remainTime, id: \.self) { info in
                         HStack {
-                            Text("\(CustomerShareInfoManager.instance.homeTable.remainTime[tableID].tableName)")
+                            Text("\(info.tableName)")
                                 .frame(width: 80)
                                 .withCustomModifierForWaitingTime()
-                            
                             Image(systemName: "arrow.right")
-                            
-                            if CustomerShareInfoManager.instance.homeTable.remainTime[tableID].remainTime == "0" {
-                                Text("已為空桌")
-                                    .frame(width: 120)
-                                    .withCustomModifierForWaitingTime()
-                            }
-                            else {
-                                Text("剩餘：\(CustomerShareInfoManager.instance.homeTable.remainTime[tableID].remainTime)分鐘")
-                                    .frame(width: 120)
-                                    .withCustomModifierForWaitingTime()
-                            }
+                            Text(info.remainTime == "0" ? "已為空桌" : "剩餘：\(info.remainTime)分鐘")
+                                .frame(width: 120)
+                                .withCustomModifierForWaitingTime()
                         }
                     }
                 }
-            }
-            // drop down bar 其他的按鈕選擇（按下什麼桌子，就會顯示那些桌子）
-            else {
-                Rectangle()
-                    .frame(height: 35)
-                    .foregroundColor(.black.opacity(0.1))
-                
-                // 哪張桌子被選到，會打勾並更新array內的Bool
-                if vm.remainTimeCategorySelect[vm.selectedRemainTimeCategoryIdx].isSelected {
-                    // 顯示剩餘等待時間的screen
-                    VStack {
-                        HStack {
-                            Text("\(CustomerShareInfoManager.instance.homeTable.remainTime[vm.selectedRemainTimeCategoryIdx-3].tableName)")
-                                .frame(width: 80)
-                                .withCustomModifierForWaitingTime()
-                            
-                            Image(systemName: "arrow.right")
-                            
-                            if CustomerShareInfoManager.instance.homeTable.remainTime[vm.selectedRemainTimeCategoryIdx-3].remainTime == "0" {
-                                Text("已為空桌")
-                                    .frame(width: 120)
-                                    .withCustomModifierForWaitingTime()
-                            }
-                            else {
-                                Text("剩餘：\(CustomerShareInfoManager.instance.homeTable.remainTime[vm.selectedRemainTimeCategoryIdx-3].remainTime)分鐘")
-                                    .frame(width: 120)
-                                    .withCustomModifierForWaitingTime()
-                            }
-                        }
+            } else if vm.remainTimeCategorySelect[vm.selectedRemainTimeCategoryIdx].isSelected {
+                // drop down bar 其他的按鈕選擇（按下什麼桌子，就會顯示那些桌子）
+                VStack {
+                    HStack {
+                        Text("\(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].tableName)")
+                            .frame(width: 80)
+                            .withCustomModifierForWaitingTime()
+                        
+                        Image(systemName: "arrow.right")
+                        
+                        Text(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].remainTime == "0" ? "已為空桌" : "剩餘：\(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].remainTime)分鐘")
+                            .frame(width: 120)
+                            .withCustomModifierForWaitingTime()
                     }
                 }
+                .padding(8)
+                .padding(.horizontal, 8)
+                .background(
+                    Rectangle()
+                        .frame(height: 35)
+                        .foregroundColor(Color.black.opacity(0.1))
+                )
             }
         }
-        
     }
     
     // 最短剩餘時間的下拉view
@@ -362,20 +313,10 @@ struct CustomerHomeView: View {
             }
         }
     }
-    
-    // 把最短剩餘時間的下拉欄append當前桌子數量。
-    func arrayAppend(startID: Int) {
-        var temp = startID
-        for _ in CustomerShareInfoManager.instance.homeTable.remainTime {
-            vm.remainTimeCategorySelect.append(.init(name: CustomerShareInfoManager.instance.homeTable.remainTime[temp].tableName, isSelected: false))
-//            currentWaitingArray.append(Object(name: CustomerShareInfoManager.instance.homeTable.remainTime[temp].tableName, selected: false))
-            temp += 1
-        }
-    }
 }
 
 // 判斷"最短剩餘時間"的桌子
-fileprivate struct TimeSort: View {
+fileprivate struct ShortestWaitingTableListView: View {
     let sortedRemainTimeInfo: [RemainTime]
     
     init(tableInfo: CustomerTableInfoModel) {

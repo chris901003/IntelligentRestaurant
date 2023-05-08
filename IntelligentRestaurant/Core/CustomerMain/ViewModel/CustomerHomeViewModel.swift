@@ -159,6 +159,13 @@ class CustomerHomeViewModel: ObservableObject {
         }
         
         await MainActor.run {
+            initRemainTimeCategorySelect()
+            for info in tableInfo.remainTime {
+                remainTimeCategorySelect.append(.init(name: info.tableName, isSelected: false))
+            }
+        }
+        
+        await MainActor.run {
             isProcess.toggle()
             loadingMessage = ""
         }
@@ -183,6 +190,7 @@ class CustomerHomeViewModel: ObservableObject {
 extension CustomerHomeViewModel {
     /// 初始化剩餘時間選項
     private func initRemainTimeCategorySelect() {
+        remainTimeCategorySelect = []
         remainTimeCategorySelect.append(contentsOf: [
             .init(name: "不顯示", isSelected: true),
             .init(name: "最短剩餘時間", isSelected: false),
