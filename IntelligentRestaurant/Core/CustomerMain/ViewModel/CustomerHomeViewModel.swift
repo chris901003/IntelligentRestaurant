@@ -71,6 +71,93 @@ class CustomerHomeViewModel: ObservableObject {
         return res
     }
     
+    /// 更新當前顯示中的店家資料
+    func updateMerchantInfo() async {
+        await MainActor.run {
+            loadingMessage = "資料更新中"
+            isProcess.toggle()
+        }
+        
+        let queryTableInfo = CustomerTableInfoModel(merchantUid: selectedMerchantUid)
+        let queryResult = await DatabaseManager.shared.uploadData(to: getTableInfoURL, data: queryTableInfo)
+        var newTableInfo: CustomerTableInfoModel? = nil
+        switch queryResult {
+        case .success(let returnedResult):
+            switch returnedResult.1 {
+            case 200:
+                newTableInfo = try? JSONDecoder().decode(CustomerTableInfoModel.self, from: returnedResult.0)
+            case 403:
+                let serverMessage = returnedResult.0.tranformToString()
+                guard let serverMessage = serverMessage else {
+                    await processErrorHandler(errorStatus: FetchMerchantTableInfoError.serverMessageError)
+                    return
+                }
+                switch serverMessage {
+                case "無此商家":
+                    await processErrorHandler(errorStatus: FetchMerchantTableInfoError.neverFail, customMessage: serverMessage)
+                    return
+                case "此商家尚未準備好":
+                    await MainActor.run {
+                        tableInfo = .init(merchantUid: "")
+                        isMerchantNotStart = true
+                        isProcess.toggle()
+                        loadingMessage = ""
+                    }
+                    return
+                default:
+                    await processErrorHandler(errorStatus: FetchMerchantTableInfoError.neverFail)
+                    return
+                }
+            default:
+                await processErrorHandler(errorStatus: FetchMerchantTableInfoError.internetError)
+                return
+            }
+        case .failure(_):
+            await processErrorHandler(errorStatus: FetchMerchantTableInfoError.internetError)
+            return
+        }
+        
+        guard let newTableInfo = newTableInfo else {
+            await processErrorHandler(errorStatus: FetchMerchantTableInfoError.dataTransferError)
+            return
+        }
+        await MainActor.run {
+            isMerchantNotStart = false
+            tableInfo = newTableInfo
+        }
+        
+        var removeTablesName: [String] = []
+        let stable: [String] = ["不顯示", "最短剩餘時間", "所有桌子資訊"]
+        for info in remainTimeCategorySelect {
+            if stable.contains(info.name) { continue }
+            let idx = newTableInfo.remainTime.firstIndex { $0.tableName == info.name }
+            if let _ = idx { continue }
+            removeTablesName.append(info.name)
+        }
+        for removeTableName in removeTablesName {
+            let idx = remainTimeCategorySelect.firstIndex { $0.name == removeTableName }
+            guard let idx = idx else {
+                await processErrorHandler(errorStatus: FetchMerchantTableInfoError.neverFail)
+                return
+            }
+            await MainActor.run {
+                let _ = remainTimeCategorySelect.remove(at: idx)
+            }
+        }
+        for newInfo in newTableInfo.remainTime {
+            let idx = remainTimeCategorySelect.firstIndex { $0.name == newInfo.tableName }
+            if let _ = idx { continue }
+            await MainActor.run {
+                remainTimeCategorySelect.append(.init(name: newInfo.tableName, isSelected: false))
+            }
+        }
+        
+        await MainActor.run {
+            isProcess.toggle()
+            loadingMessage = ""
+        }
+    }
+    
     // Private Function
     /// 獲取店家狀態資料的協助函數
     private func getTableInfoHelper() {
@@ -106,7 +193,12 @@ class CustomerHomeViewModel: ObservableObject {
                     await processErrorHandler(errorStatus: FetchMerchantTableInfoError.neverFail)
                     return
                 case "此商家尚未準備好":
-                    await MainActor.run { isMerchantNotStart = true }
+                    await MainActor.run {
+                        tableInfo = .init(merchantUid: "")
+                        isMerchantNotStart = true
+                        isProcess.toggle()
+                        loadingMessage = ""
+                    }
                     return
                 default:
                     await processErrorHandler(errorStatus: FetchMerchantTableInfoError.internetError)

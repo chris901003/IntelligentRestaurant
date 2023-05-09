@@ -21,6 +21,8 @@ struct CustomerHomeView: View {
             
             if vm.selectedMerchantUid == "" {
                 notSelectMerchantSection
+            } else if vm.isMerchantNotStart {
+                merchantNotStart
             } else {
                 VStack {
                     // 餐廳名稱
@@ -102,6 +104,8 @@ struct CustomerHomeView: View {
                     
                     // 空桌狀態的Drop down screen
                     emptyTableDropDownScreen
+                    
+                    updateCurrentInfoButton
                     
                     Spacer()
                 }
@@ -312,6 +316,45 @@ struct CustomerHomeView: View {
                 )
             }
         }
+    }
+    
+    private var merchantNotStart: some View {
+        VStack {
+            Text("店家未啟動裝置")
+                .font(.title3)
+                .bold()
+            updateCurrentInfoButton
+        }
+    }
+    
+    private var updateCurrentInfoButton: some View {
+        Button {
+            Task { await vm.updateMerchantInfo() }
+        } label: {
+            HStack {
+                Text("獲取最新狀態")
+                    .font(.headline)
+                    .foregroundColor(Color.blue)
+                Image(systemName: "arrow.counterclockwise")
+                    .resizable()
+                    .scaledToFit()
+                    .bold()
+                    .frame(width: 15, height: 15)
+                    .foregroundColor(Color.blue)
+                    .padding(4)
+                    .background(
+                        Circle()
+                            .stroke(Color.blue.opacity(0.8), lineWidth: 2)
+                    )
+            }
+            .padding(8)
+            .padding(.horizontal, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.blue, lineWidth: 2)
+            )
+        }
+        .padding(.top)
     }
 }
 

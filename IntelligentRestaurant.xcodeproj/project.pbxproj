@@ -414,10 +414,10 @@
 			isa = PBXGroup;
 			children = (
 				0562D7182A050BE40074FA3F /* CustomerMainView.swift */,
-				0562D7232A052C490074FA3F /* CustomerAccountView.swift */,
-				0562D7272A0623D00074FA3F /* CustomerSearchView.swift */,
 				0562D7372A07D1E00074FA3F /* CustomerHomeView.swift */,
+				0562D7272A0623D00074FA3F /* CustomerSearchView.swift */,
 				0562D73B2A08FAFB0074FA3F /* CustomerFavoriteView.swift */,
+				0562D7232A052C490074FA3F /* CustomerAccountView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -427,8 +427,8 @@
 			children = (
 				0562D71A2A050CC40074FA3F /* CustomerHomeViewModel.swift */,
 				0562D71C2A050D510074FA3F /* CustomerSearchViewModel.swift */,
-				0562D7252A052CB70074FA3F /* CustomerAccountViewModel.swift */,
 				0562D73D2A0900030074FA3F /* CustomerFavoriteViewModel.swift */,
+				0562D7252A052CB70074FA3F /* CustomerAccountViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
