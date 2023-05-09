@@ -39,43 +39,6 @@ class CustomerHomeViewModel: ObservableObject {
     }
     
     // Public Function
-    func getTableInfo(merchantUid: String) {
-        let tableInfo = CustomerTableInfoModel(merchantUid: merchantUid)
-        Task {
-            let getResult = await DatabaseManager.shared.uploadData(to: getTableInfoURL, data: tableInfo, httpMethod: "POST")
-            switch getResult {
-            case .success(let returnedResult):
-                switch returnedResult.1 {
-                case 200:
-                    let returnedData = returnedResult.0
-                    guard let Info = try? JSONDecoder().decode(CustomerTableInfoModel.self, from: returnedData) else {
-                        return
-                    }
-                    await MainActor.run {
-                        CustomerShareInfoManager.instance.homeTable = Info
-                        status = false
-                    }
-                    print("success!")
-                    print(Info)
-//                    print(ShareInfoManager.shared.homeTable.remainTime.indices)
-                    break
-                default:
-                    print(returnedResult.1)
-                    await MainActor.run {
-                        status = true
-                    }
-                }
-            case .failure(let errorStatus):
-                print("fail")
-                print(errorStatus.rawValue)
-            }
-        }
-    }
-    
-    var sortedTable: [RemainTime] {
-        CustomerShareInfoManager.instance.homeTable.remainTime.sorted(by: RemainTime.sortByTime)
-    }
-    
     /// 點選剩餘等待時間觸發
     func selectRemainTimeCategory(selected: CustomerShowTableInfoCategoryModel) {
         guard !selected.isSelected else { return }
@@ -177,7 +140,7 @@ class CustomerHomeViewModel: ObservableObject {
         CustomerShareInfoManager.instance.$selectedMerchantUid
             .receive(on: DispatchQueue.main)
             .sink { [weak self] returnedSelectedMerchantUid in
-//                if returnedSelectedMerchantUid == "" { return }
+                if returnedSelectedMerchantUid == "" { return }
                 self?.selectedMerchantUid = returnedSelectedMerchantUid
                 self?.getTableInfoHelper()
             }
