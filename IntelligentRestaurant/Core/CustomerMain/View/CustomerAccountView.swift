@@ -54,6 +54,7 @@ struct CustomerAccountView: View {
             .overlay {
                 Image(systemName: "person")
                     .resizable()
+                    .scaledToFill()
                     .padding(50)
             }
             .padding(.top,10)
@@ -248,7 +249,7 @@ fileprivate struct PasswordInputBox: View {
             Button {
                 isShowPassword.toggle()
             } label: {
-                Image(systemName: isShowPassword ? "eye.slash" : "eye")
+                Image(systemName: isShowPassword ? "eye" : "eye.slash")
                     .accentColor(.gray)
             }
         }
