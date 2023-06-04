@@ -65,7 +65,7 @@ struct MerchantTopNavigationBarView: View {
                 Text("權重設定")
                     .onTapGesture {
                         withAnimation { vm.isShowSelectList.toggle() }
-                        MerchantShareInfoManager.instance.settingModeSelect = [1]
+                        MerchantShareInfoManager.instance.settingModeSelect = [8]
                         MerchantShareInfoManager.instance.tabViewSelect = 2
                     }
                 Text("空間設定")

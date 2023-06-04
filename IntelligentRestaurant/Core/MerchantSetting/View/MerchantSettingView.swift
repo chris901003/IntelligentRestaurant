@@ -135,11 +135,11 @@ struct MerchantSettingView: View {
                         .withMerchantSettingCardModifier()
                         .foregroundColor(Color.black)
                 }
-                NavigationLink(value: 7) {
-                    Text("第二階段資料")
-                        .withMerchantSettingCardModifier()
-                        .foregroundColor(Color.black)
-                }
+//                NavigationLink(value: 7) {
+//                    Text("第二階段資料")
+//                        .withMerchantSettingCardModifier()
+//                        .foregroundColor(Color.black)
+//                }
             }
             .font(.headline)
             .padding()

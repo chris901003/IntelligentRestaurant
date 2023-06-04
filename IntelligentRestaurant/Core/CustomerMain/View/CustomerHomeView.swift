@@ -218,7 +218,7 @@ struct CustomerHomeView: View {
                                 .frame(width: 80)
                                 .withCustomModifierForWaitingTime()
                             Image(systemName: "arrow.right")
-                            Text(info.remainTime == "0" ? "已為空桌" : "剩餘：\(info.remainTime)分鐘")
+                            Text(info.remainTime == "0" ? "已為空桌" : "剩餘：\(Int(ceil(Double(info.remainTime)! / 60)))分鐘")
                                 .frame(width: 120)
                                 .withCustomModifierForWaitingTime()
                         }
@@ -234,7 +234,7 @@ struct CustomerHomeView: View {
                         
                         Image(systemName: "arrow.right")
                         
-                        Text(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].remainTime == "0" ? "已為空桌" : "剩餘：\(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].remainTime)分鐘")
+                        Text(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].remainTime == "0" ? "已為空桌" : "剩餘：\(Int(ceil(Double(vm.tableInfo.remainTime[vm.selectedRemainTimeCategoryIdx - 3].remainTime)!)))分鐘")
                             .frame(width: 120)
                             .withCustomModifierForWaitingTime()
                     }
