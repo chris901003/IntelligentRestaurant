@@ -99,7 +99,7 @@ struct MerchantFoodDetailView: View {
                 .font(.subheadline)
         }
         .chartXAxisLabel(position: .bottom, alignment: .center) {
-            Text("總花費時間(分)")
+            Text("總花費時間(秒)")
                 .font(.subheadline)
         }
     }
