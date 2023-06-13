@@ -27,7 +27,7 @@ class MerchantHomeViewModel: ObservableObject {
     // Private Variable
     private var cancellable = Set<AnyCancellable>()
     private var refreshTimer: Timer? = nil
-    private let allTableWithFoodInfoDatabaseUrl = "http://120.126.151.186/API/eating/table/all-table-with-food-info"
+    private let allTableWithFoodInfoDatabaseUrl = "http://120.126.151.185/API/eating/table/all-table-with-food-info"
     
     init() {
         // Need

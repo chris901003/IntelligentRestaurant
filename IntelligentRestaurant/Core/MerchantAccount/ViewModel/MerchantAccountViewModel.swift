@@ -30,7 +30,7 @@ class MerchantAccountViewModel: ObservableObject {
     @Published var isShowSaveSuccess: Bool = false
     
     // Private Variable
-    private var updateLink: String = "http://120.126.151.186/API/eating/user"
+    private var updateLink: String = "http://120.126.151.185/API/eating/user"
     private var originalAccountInfo: MerchantAccountModel = MerchantAccountModel()
     private var accountUid: String = ""
     

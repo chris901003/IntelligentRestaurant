@@ -30,10 +30,10 @@ class MerchantRoomSpaceViewModel: ObservableObject {
     // Private Variable
     private var isChangeCancellable: AnyCancellable? = nil
     private var originalItemsInfo: [MerchantRoomSpaceItemModelExt] = []
-    private let allTableInfoDatabaseUrl: String = "http://120.126.151.186/API/eating/table/all-table-info"
-    private let roomTableDatabaseUrl: String = "http://120.126.151.186/API/eating/table"
-    private let roomItemDatabaseUrl: String = "http://120.126.151.186/API/eating/item"
-    private let allRoomItemDatabaseUrl: String = "http://120.126.151.186/API/eating/item/all-item-of-merchant"
+    private let allTableInfoDatabaseUrl: String = "http://120.126.151.185/API/eating/table/all-table-info"
+    private let roomTableDatabaseUrl: String = "http://120.126.151.185/API/eating/table"
+    private let roomItemDatabaseUrl: String = "http://120.126.151.185/API/eating/item"
+    private let allRoomItemDatabaseUrl: String = "http://120.126.151.185/API/eating/item/all-item-of-merchant"
     
     // Init Function
     init() {

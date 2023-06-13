@@ -25,9 +25,9 @@ class ReviewObjectDetectionDataViewModel: ObservableObject {
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
     private let imagePerPage: Int = 10
     private var totalTrainImage: Int = 0
-    private let trainDataCountURL = "http://120.126.151.186/API/eating/model-weight/object-detection-train-image-count"
-    private let trainDataInfoURL = "http://120.126.151.186/API/eating/model-weight/object-detection-train-image-info"
-    private let trainDataDeleteURL = "http://120.126.151.186/API/eating/model-weight/delete-object-detection-train-image"
+    private let trainDataCountURL = "http://120.126.151.185/API/eating/model-weight/object-detection-train-image-count"
+    private let trainDataInfoURL = "http://120.126.151.185/API/eating/model-weight/object-detection-train-image-info"
+    private let trainDataDeleteURL = "http://120.126.151.185/API/eating/model-weight/delete-object-detection-train-image"
     
     // Init Function
     init() {

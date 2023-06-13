@@ -30,7 +30,7 @@ class CustomerHomeViewModel: ObservableObject {
     
     // Private Variable
     private var cancellable = Set<AnyCancellable>()
-    private var getTableInfoURL = "http://120.126.151.186/API/eating/food/customer"
+    private var getTableInfoURL = "http://120.126.151.185/API/eating/food/customer"
     
     // Init Function
     init() {

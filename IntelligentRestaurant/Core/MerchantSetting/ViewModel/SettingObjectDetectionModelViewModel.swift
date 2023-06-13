@@ -22,9 +22,9 @@ class SettingObjectDetectionModelViewModel: ObservableObject {
     
     // Private Variable
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
-    private let objectDetectionModelUrl: String = "http://120.126.151.186/API/eating/model-weight/fetch-object-detection-model-info"
-    private let changeModelWeightUrl: String = "http://120.126.151.186/API/eating/model-weight/change-object-detection-weight-name"
-    private let changeModelWeightUseUrl: String = "http://120.126.151.186/API/eating/model-weight/object-detection-model-selected"
+    private let objectDetectionModelUrl: String = "http://120.126.151.185/API/eating/model-weight/fetch-object-detection-model-info"
+    private let changeModelWeightUrl: String = "http://120.126.151.185/API/eating/model-weight/change-object-detection-weight-name"
+    private let changeModelWeightUseUrl: String = "http://120.126.151.185/API/eating/model-weight/object-detection-model-selected"
     
     // Init Function
     init() {

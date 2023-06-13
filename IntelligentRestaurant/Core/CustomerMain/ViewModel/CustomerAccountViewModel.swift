@@ -24,7 +24,7 @@ class CustomerAccountViewModel: ObservableObject {
     var errorMessage: String = ""
     
     // Private Variable
-    private var updateAccountURL = "http://120.126.151.186/API/eating/user/customer"
+    private var updateAccountURL = "http://120.126.151.185/API/eating/user/customer"
     
     // Init Function
     init() {

@@ -22,7 +22,7 @@ class ChangePasswordViewModel: ObservableObject {
     @Published var progressErrorMessage: String = ""
     
     // Private Variable
-    private var verifyOldPasswordUrl: String = "http://120.126.151.186/API/eating/user/login"
+    private var verifyOldPasswordUrl: String = "http://120.126.151.185/API/eating/user/login"
     private var cancellable = Set<AnyCancellable>()
     
     // Init Function

@@ -23,11 +23,11 @@ class CustomerSearchViewModel: ObservableObject {
     var errorMessage: String = ""
     
     // Private variable
-    private var searchMerchantURL = "http://120.126.151.186/API/eating/user/customer/keyName"
-    private var getMerchantDetailURL = "http://120.126.151.186/API/eating/user/customer/getDetails"
-    private var getMyFavListURL = "http://120.126.151.186/API/eating/user/customer/favorite"
-    private var addFavoriateMerchant = "http://120.126.151.186/API/eating/user/customer/favorite"
-    private var deleteFavoriateMerchant = "http://120.126.151.186/API/eating/user/customer/favorite"
+    private var searchMerchantURL = "http://120.126.151.185/API/eating/user/customer/keyName"
+    private var getMerchantDetailURL = "http://120.126.151.185/API/eating/user/customer/getDetails"
+    private var getMyFavListURL = "http://120.126.151.185/API/eating/user/customer/favorite"
+    private var addFavoriateMerchant = "http://120.126.151.185/API/eating/user/customer/favorite"
+    private var deleteFavoriateMerchant = "http://120.126.151.185/API/eating/user/customer/favorite"
     private let uid: String = CustomerShareInfoManager.instance.customerAccount.uid
     
     // Pubilc function

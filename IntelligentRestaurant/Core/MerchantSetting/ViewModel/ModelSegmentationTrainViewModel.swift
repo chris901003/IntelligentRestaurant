@@ -30,7 +30,7 @@ class ModelSegmentationTrainViewModel: ObservableObject {
 
     // Private Variable
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
-    private let uploadTrainDataUrl: String = "http://120.126.151.186/API/eating/model-weight/upload-segmentation-single-image"
+    private let uploadTrainDataUrl: String = "http://120.126.151.185/API/eating/model-weight/upload-segmentation-single-image"
     
     // Public Function
     /// 將相簿選的圖像轉成UIImage

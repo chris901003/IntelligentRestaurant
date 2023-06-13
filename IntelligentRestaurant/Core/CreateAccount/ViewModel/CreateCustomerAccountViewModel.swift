@@ -23,7 +23,7 @@ class CreateCustomerAccountViewModel: ObservableObject {
     
     // Private Variable
     private var cancellable = Set<AnyCancellable>()
-    private var createCustomerURL = "http://120.126.151.186/API/eating/user/signin/customer"
+    private var createCustomerURL = "http://120.126.151.185/API/eating/user/signin/customer"
     
     // Init Function
     init() {

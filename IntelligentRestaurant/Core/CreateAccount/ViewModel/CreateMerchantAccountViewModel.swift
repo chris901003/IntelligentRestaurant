@@ -29,7 +29,7 @@ class CreateMerchantAccountViewModel: ObservableObject {
     
     // Private Varibale
     private var confirmPasswordCancellable: AnyCancellable? = nil
-    private var registerUrl: String = "http://120.126.151.186/API/eating/user/signin"
+    private var registerUrl: String = "http://120.126.151.185/API/eating/user/signin"
     
     // Init Function
     init() {

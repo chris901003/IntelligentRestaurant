@@ -32,8 +32,8 @@ class LoginViewModel: ObservableObject {
     @Published var isShowSelectCreateAccountMode: Bool = false
     
     // Private Variable
-    private var loginMerchantUrl: String = "http://120.126.151.186/API/eating/user/login"
-    private var loginCustomerUrl: String = "http://120.126.151.186/API/eating/user/login/customer"
+    private var loginMerchantUrl: String = "http://120.126.151.185/API/eating/user/login"
+    private var loginCustomerUrl: String = "http://120.126.151.185/API/eating/user/login/customer"
     
     // Init Function
     init() {

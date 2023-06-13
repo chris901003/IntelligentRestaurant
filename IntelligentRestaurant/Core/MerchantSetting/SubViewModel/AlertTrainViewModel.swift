@@ -19,7 +19,7 @@ class AlertTrainViewModel: ObservableObject {
     
     // Private Variable
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
-    private let stopTrainUrl = "http://120.126.151.186/API/eating/model-weight/stop-train"
+    private let stopTrainUrl = "http://120.126.151.185/API/eating/model-weight/stop-train"
     
     // Public Function
     /// 暫停訓練

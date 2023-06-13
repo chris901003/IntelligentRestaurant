@@ -21,7 +21,7 @@ class CustomerFavoriteViewModel: ObservableObject {
     
     // Private Variable
     private let uid: String = CustomerShareInfoManager.instance.customerAccount.uid
-    private let fetchFavoriteMerchantUrl: String = "http://120.126.151.186/API/eating/user/customer/favorite"
+    private let fetchFavoriteMerchantUrl: String = "http://120.126.151.185/API/eating/user/customer/favorite"
     
     // Init Function
     init() {

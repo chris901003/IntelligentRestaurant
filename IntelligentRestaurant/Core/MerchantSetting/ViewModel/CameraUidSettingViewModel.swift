@@ -16,7 +16,7 @@ class CameraUidSettingViewModel: ObservableObject {
     @Published var tablesInfo: [(String, String)] = []
     
     private var merchantUid: String = MerchantShareInfoManager.instance.merchantAccount.uid
-    private let allTableInfoDatabaseUrl: String = "http://120.126.151.186/API/eating/table/all-table-info"
+    private let allTableInfoDatabaseUrl: String = "http://120.126.151.185/API/eating/table/all-table-info"
     
     // Init Function
     init() {

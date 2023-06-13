@@ -31,10 +31,10 @@ class ModelObjectDetectionTrainDataViewModel: ObservableObject {
     
     // Private Variable
     private let uid: String = MerchantShareInfoManager.instance.merchantAccount.uid
-    private let trainDataDatabaseURL = "http://120.126.151.186/API/eating/model-weight/upload-object-detection-single-image"
-    private let trainDataCountURL = "http://120.126.151.186/API/eating/model-weight/object-detection-train-image-count"
-    private let trainModelURL = "http://120.126.151.186/API/eating/model-weight/train-object-detection-model"
-    private let checkTrainModelURL = "http://120.126.151.186/API/eating/model-weight/check-is-train"
+    private let trainDataDatabaseURL = "http://120.126.151.185/API/eating/model-weight/upload-object-detection-single-image"
+    private let trainDataCountURL = "http://120.126.151.185/API/eating/model-weight/object-detection-train-image-count"
+    private let trainModelURL = "http://120.126.151.185/API/eating/model-weight/train-object-detection-model"
+    private let checkTrainModelURL = "http://120.126.151.185/API/eating/model-weight/check-is-train"
     
     // Init Function
     init() {
